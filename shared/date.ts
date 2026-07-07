@@ -15,6 +15,14 @@ export function todayInNewYork(now = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
+export function todayInLocalTimezone(now = new Date()): string {
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
 export function validatePuzzleDate(date: string): string | null {
   if (!ISO_DATE_PATTERN.test(date)) {
     return "Date must use YYYY-MM-DD format.";
@@ -47,4 +55,13 @@ function partValue(
   }
 
   return part.value;
+}
+
+export function formatDate(date: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(date));
 }

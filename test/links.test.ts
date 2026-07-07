@@ -9,9 +9,9 @@ describe("linksForWord", () => {
       "Google",
       "Dictionary",
       "Thesaurus",
+      "Urban",
       "RU",
       "UK",
-      "Urban",
     ]);
     expect(links[0].href).toBe(
       "https://www.google.com/search?q=tinderbox+meaning",
@@ -20,11 +20,11 @@ describe("linksForWord", () => {
       "https://www.merriam-webster.com/dictionary/tinderbox",
     );
     expect(links[2].href).toBe("https://www.thesaurus.com/browse/tinderbox");
-    expect(links[3].href).toContain("tl=ru");
-    expect(links[4].href).toContain("tl=uk");
-    expect(links[5].href).toBe(
+    expect(links[3].href).toBe(
       "https://www.urbandictionary.com/define.php?term=tinderbox",
     );
+    expect(links[4].href).toContain("tl=ru");
+    expect(links[5].href).toContain("tl=uk");
   });
 
   it("normalizes multi-word dictionary URLs", () => {

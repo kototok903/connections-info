@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { todayInNewYork, validatePuzzleDate } from "../shared/date.js";
+import {
+  todayInLocalTimezone,
+  todayInNewYork,
+  validatePuzzleDate,
+} from "../shared/date.js";
 
 describe("date helpers", () => {
   it("formats today using the New York timezone", () => {
@@ -17,5 +21,11 @@ describe("date helpers", () => {
       "Date must use YYYY-MM-DD format.",
     );
     expect(validatePuzzleDate("2026-02-31")).toBe("Date is invalid.");
+  });
+
+  it("formats today using the runtime local timezone", () => {
+    expect(todayInLocalTimezone(new Date(2026, 6, 7, 23, 30))).toBe(
+      "2026-07-07",
+    );
   });
 });

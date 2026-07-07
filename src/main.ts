@@ -1,5 +1,5 @@
 import { loadConnectionsPuzzle } from "./api";
-import { todayInNewYork } from "../shared/date.js";
+import { formatDate, todayInLocalTimezone } from "../shared/date.js";
 import { linksForWord } from "./links";
 import type { ConnectionsPuzzle } from "../shared/types.js";
 import "./styles.css";
@@ -46,7 +46,7 @@ const elements = {
   wordGrid,
 };
 
-dateInput.value = todayInNewYork();
+dateInput.value = todayInLocalTimezone();
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   void loadPuzzle(elements.dateInput.value);
@@ -61,7 +61,7 @@ async function loadPuzzle(date: string): Promise<void> {
   try {
     const puzzle = await loadConnectionsPuzzle(date);
     renderPuzzle(puzzle);
-    setStatus(`Loaded ${puzzle.words.length} words for ${puzzle.date}.`);
+    setStatus(`Loaded words for ${formatDate(puzzle.date)}.`);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to load puzzle.";
