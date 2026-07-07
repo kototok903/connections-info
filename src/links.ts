@@ -12,16 +12,20 @@ export function linksForWord(word: string): WordLink[] {
       href: merriamWebsterUrl(lower),
     },
     {
+      label: "Thesaurus",
+      href: thesaurusUrl(lower),
+    },
+    {
+      label: "Urban",
+      href: urbanDictionaryUrl(lower),
+    },
+    {
       label: "RU",
       href: googleTranslateUrl(lower, "ru"),
     },
     {
       label: "UK",
       href: googleTranslateUrl(lower, "uk"),
-    },
-    {
-      label: "Urban",
-      href: urbanDictionaryUrl(lower),
     },
   ];
 }
@@ -34,6 +38,12 @@ function googleSearchUrl(query: string): string {
 
 function merriamWebsterUrl(word: string): string {
   return `https://www.merriam-webster.com/dictionary/${encodeURIComponent(
+    normalizedTerm(word),
+  )}`;
+}
+
+function thesaurusUrl(word: string): string {
+  return `https://www.thesaurus.com/browse/${encodeURIComponent(
     normalizedTerm(word),
   )}`;
 }
