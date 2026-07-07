@@ -7,7 +7,7 @@ export async function loadConnectionsPuzzle(
   url.searchParams.set("date", date);
 
   const response = await fetch(url);
-  const data = (await response.json()) as unknown;
+  const data = await readJsonResponse(response);
 
   if (!response.ok) {
     const message =
@@ -22,6 +22,17 @@ export async function loadConnectionsPuzzle(
   }
 
   return data;
+}
+
+async function readJsonResponse(response: Response): Promise<unknown> {
+  const text = await response.text();
+
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    const preview = text.trim().slice(0, 160) || response.statusText;
+    throw new Error(`API returned ${response.status}: ${preview}`);
+  }
 }
 
 function isConnectionsPuzzle(value: unknown): value is ConnectionsPuzzle {

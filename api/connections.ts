@@ -17,45 +17,43 @@ type NytConnectionsResponse = {
 
 const NYT_ENDPOINT = "https://www.nytimes.com/svc/connections/v2";
 
-export default {
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    const requestedDate = url.searchParams.get("date")?.trim();
-    const date = requestedDate || todayInNewYork();
-    const dateError = validatePuzzleDate(date);
+export async function GET(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  const requestedDate = url.searchParams.get("date")?.trim();
+  const date = requestedDate || todayInNewYork();
+  const dateError = validatePuzzleDate(date);
 
-    if (dateError) {
-      return jsonResponse(
-        { error: dateError },
-        {
-          status: 400,
-          cache: "no-store",
-        },
-      );
-    }
+  if (dateError) {
+    return jsonResponse(
+      { error: dateError },
+      {
+        status: 400,
+        cache: "no-store",
+      },
+    );
+  }
 
-    try {
-      const puzzle = await fetchConnectionsPuzzle(date);
+  try {
+    const puzzle = await fetchConnectionsPuzzle(date);
 
-      return jsonResponse(puzzle, {
-        status: 200,
-        cache: cacheHeaderFor(date),
-      });
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to load puzzle.";
-      const status = message.includes("not found") ? 404 : 502;
+    return jsonResponse(puzzle, {
+      status: 200,
+      cache: cacheHeaderFor(date),
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to load puzzle.";
+    const status = message.includes("not found") ? 404 : 502;
 
-      return jsonResponse(
-        { error: message },
-        {
-          status,
-          cache: "no-store",
-        },
-      );
-    }
-  },
-};
+    return jsonResponse(
+      { error: message },
+      {
+        status,
+        cache: "no-store",
+      },
+    );
+  }
+}
 
 export async function fetchConnectionsPuzzle(
   date: string,
@@ -118,7 +116,9 @@ export function parseNytConnections(
               : Number.MAX_SAFE_INTEGER,
         };
       })
-      .filter((card): card is { word: string; position: number } => card !== null);
+      .filter(
+        (card): card is { word: string; position: number } => card !== null,
+      );
   });
 
   if (cards.length !== 16) {
