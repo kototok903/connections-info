@@ -4,16 +4,30 @@
   "private": true,
   "type": "module",
   "packageManager": "bun@1.3.5",
+  "imports": {
+    "#api/*": "./api/*",
+    "#shared/*": "./shared/*",
+    "#src/*": "./src/*"
+  },
   "scripts": {
     "dev": "vite",
     "dev:vercel": "bunx vercel dev",
     "build": "tsc && vite build",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^24.0.10",
+    "eslint": "^10.6.0",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.4",
     "typescript": "^5.8.3",
+    "typescript-eslint": "^8.63.0",
     "vite": "^7.0.2",
     "vitest": "^3.2.4"
   }

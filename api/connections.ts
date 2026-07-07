@@ -1,6 +1,6 @@
-import { todayInNewYork, validatePuzzleDate } from "../shared/date.js";
-import type { ConnectionsPuzzle } from "../shared/types.js";
-import { isRecord } from "../shared/utils.js";
+import { todayInNewYork, validatePuzzleDate } from "#shared/date.js";
+import type { ConnectionsPuzzle } from "#shared/types.js";
+import { isRecord } from "#shared/utils.js";
 
 type NytConnectionsCard = {
   content?: unknown;

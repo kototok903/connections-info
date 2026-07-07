@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { parseNytConnections } from "../api/connections";
+
+import { parseNytConnections } from "#api/connections";
 
 describe("parseNytConnections", () => {
   it("extracts only words sorted by position", () => {

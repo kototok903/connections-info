@@ -1,5 +1,5 @@
-import type { ConnectionsPuzzle } from "../shared/types.js";
-import { isRecord } from "../shared/utils.js";
+import type { ConnectionsPuzzle } from "#shared/types.js";
+import { isRecord } from "#shared/utils.js";
 
 export async function loadConnectionsPuzzle(
   date: string,

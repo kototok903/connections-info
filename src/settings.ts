@@ -1,6 +1,6 @@
-import { LINK_SOURCE_IDS, type LinkSourceId } from "../shared/types.js";
-import { isRecord } from "../shared/utils.js";
-import { DEFAULT_LINK_SOURCE_IDS } from "./links";
+import { LINK_SOURCE_IDS, type LinkSourceId } from "#shared/types.js";
+import { isRecord } from "#shared/utils.js";
+import { DEFAULT_LINK_SOURCE_IDS } from "#src/links";
 
 export const STORAGE_KEY = "connections-info:settings:v1";
 

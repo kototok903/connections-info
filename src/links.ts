@@ -1,4 +1,4 @@
-import type { LinkSourceId, WordLink } from "../shared/types.js";
+import type { LinkSourceId, WordLink } from "#shared/types.js";
 
 export type LinkSource = {
   id: LinkSourceId;

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import {
   defaultSettings,
   enabledSourceCount,
@@ -6,7 +7,7 @@ import {
   saveSettings,
   setLinkSourceEnabled,
   STORAGE_KEY,
-} from "../src/settings";
+} from "#src/settings";
 
 const storage = new Map<string, string>();
 

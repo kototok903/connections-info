@@ -1,18 +1,15 @@
 import { describe, expect, it } from "vitest";
+
 import {
   todayInLocalTimezone,
   todayInNewYork,
   validatePuzzleDate,
-} from "../shared/date.js";
+} from "#shared/date.js";
 
 describe("date helpers", () => {
   it("formats today using the New York timezone", () => {
-    expect(todayInNewYork(new Date("2026-07-07T03:30:00Z"))).toBe(
-      "2026-07-06",
-    );
-    expect(todayInNewYork(new Date("2026-07-07T05:00:00Z"))).toBe(
-      "2026-07-07",
-    );
+    expect(todayInNewYork(new Date("2026-07-07T03:30:00Z"))).toBe("2026-07-06");
+    expect(todayInNewYork(new Date("2026-07-07T05:00:00Z"))).toBe("2026-07-07");
   });
 
   it("validates ISO calendar dates", () => {

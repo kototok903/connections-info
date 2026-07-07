@@ -1,20 +1,21 @@
-import { loadConnectionsPuzzle } from "./api";
+import "#src/styles.css";
+
 import {
   formatDate,
   todayInLocalTimezone,
   validatePuzzleDate,
-} from "../shared/date.js";
-import { LINK_SOURCES, linksForWord } from "./links";
+} from "#shared/date.js";
+import type { ConnectionsPuzzle, LinkSourceId } from "#shared/types.js";
+import { loadConnectionsPuzzle } from "#src/api";
+import { LINK_SOURCES, linksForWord } from "#src/links";
 import {
+  type AppSettings,
   enabledSourceCount,
   enabledSourceIds,
   loadSettings,
   saveSettings,
   setLinkSourceEnabled,
-  type AppSettings,
-} from "./settings";
-import type { ConnectionsPuzzle, LinkSourceId } from "../shared/types.js";
-import "./styles.css";
+} from "#src/settings";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
@@ -195,7 +196,7 @@ function renderSettings(appSettings: AppSettings): void {
   const fragment = document.createDocumentFragment();
   const enabledCount = enabledSourceCount(appSettings);
 
-  for (const [_, source] of Object.entries(LINK_SOURCES)) {
+  for (const source of Object.values(LINK_SOURCES)) {
     const row = document.createElement("label");
     row.className = "settings-row";
 

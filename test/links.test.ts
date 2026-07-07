@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { linksForWord } from "../src/links";
+
+import { linksForWord } from "#src/links";
 
 describe("linksForWord", () => {
   it("builds research links for a word", () => {
