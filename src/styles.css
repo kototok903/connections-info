@@ -79,7 +79,7 @@ h1 {
 
 .date-controls {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: 8px;
 }
 
@@ -106,6 +106,43 @@ button {
 
 button:hover {
     background: #333333;
+}
+
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    min-width: 42px;
+    padding: 0;
+}
+
+.icon-button span {
+    overflow: hidden;
+    width: 18px;
+    height: 18px;
+    font-size: 0;
+    background: currentColor;
+    mask: var(--icon) center / contain no-repeat;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+}
+
+#settings-button span {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+}
+
+.close-button {
+    color: var(--ink);
+    background: #ffffff;
+    border: 1px solid var(--line);
+}
+
+.close-button:hover {
+    background: var(--tile-hover);
+}
+
+.close-button span {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
 }
 
 .status {
@@ -195,6 +232,118 @@ button:hover {
     border-color: #b8b8aa;
 }
 
+.settings-dialog {
+    width: min(100% - 32px, 420px);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0;
+    color: var(--ink);
+    background: #ffffff;
+    box-shadow: 0 18px 60px rgb(0 0 0 / 0.22);
+}
+
+.settings-dialog::backdrop {
+    background: rgb(0 0 0 / 0.32);
+}
+
+.settings-panel {
+    margin: 0;
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px;
+    border-bottom: 1px solid var(--line);
+}
+
+.settings-header h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.15rem;
+    line-height: 1.2;
+}
+
+.settings-list {
+    display: grid;
+    padding: 8px 0;
+}
+
+.settings-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    min-height: 58px;
+    padding: 0 16px;
+    cursor: pointer;
+}
+
+.settings-row:hover {
+    background: #f7f7f2;
+}
+
+.settings-source {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    gap: 10px;
+    font-weight: 800;
+}
+
+.settings-source img,
+.links img {
+    flex: 0 0 auto;
+    border-radius: 3px;
+}
+
+.settings-row input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.switch {
+    position: relative;
+    width: 46px;
+    height: 28px;
+    border-radius: 999px;
+    background: #b8b8aa;
+    transition: background 140ms ease;
+}
+
+.switch::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.28);
+    transition: transform 140ms ease;
+}
+
+.settings-row input:checked + .switch {
+    background: var(--ink);
+}
+
+.settings-row input:checked + .switch::after {
+    transform: translateX(18px);
+}
+
+.settings-row input:focus-visible + .switch {
+    outline: 2px solid var(--blue);
+    outline-offset: 3px;
+}
+
+.settings-row input:disabled + .switch {
+    opacity: 0.55;
+}
+
 @media (max-width: 760px) {
     .shell {
         width: min(100% - 24px, 640px);
@@ -217,11 +366,29 @@ button:hover {
 }
 
 @media (max-width: 460px) {
+    .date-controls {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+    }
+
     .word-grid {
         grid-template-columns: 1fr;
     }
 
     .word-card {
         min-height: 132px;
+    }
+
+    .settings-dialog {
+        width: 100%;
+        max-width: none;
+        height: 100%;
+        max-height: none;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .settings-panel {
+        min-height: 100%;
     }
 }

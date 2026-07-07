@@ -1,4 +1,5 @@
 import type { ConnectionsPuzzle } from "../shared/types.js";
+import { isRecord } from "../shared/utils.js";
 
 export async function loadConnectionsPuzzle(
   date: string,
@@ -42,8 +43,4 @@ function isConnectionsPuzzle(value: unknown): value is ConnectionsPuzzle {
     Array.isArray(value.words) &&
     value.words.every((word) => typeof word === "string")
   );
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
 }

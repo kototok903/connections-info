@@ -1,5 +1,6 @@
 import { todayInNewYork, validatePuzzleDate } from "../shared/date.js";
 import type { ConnectionsPuzzle } from "../shared/types.js";
+import { isRecord } from "../shared/utils.js";
 
 type NytConnectionsCard = {
   content?: unknown;
@@ -159,8 +160,4 @@ function cacheHeaderFor(date: string): string {
   }
 
   return "public, max-age=60, s-maxage=3600, stale-while-revalidate=86400";
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
 }
