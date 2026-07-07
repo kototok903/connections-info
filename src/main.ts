@@ -58,6 +58,15 @@ app.innerHTML = `
           </button>
         </header>
         <div class="settings-list" id="settings-list"></div>
+        <footer class="settings-footer">
+          <a
+            href="https://github.com/kototok903/connections-info"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+        </footer>
       </form>
     </dialog>
   </section>
