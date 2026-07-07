@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { todayInNewYork, validatePuzzleDate } from "../src/date";
+import { todayInNewYork, validatePuzzleDate } from "../shared/date.js";
 
 describe("date helpers", () => {
   it("formats today using the New York timezone", () => {

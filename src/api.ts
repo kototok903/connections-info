@@ -1,4 +1,4 @@
-import type { ConnectionsPuzzle } from "./types";
+import type { ConnectionsPuzzle } from "../shared/types.js";
 
 export async function loadConnectionsPuzzle(
   date: string,

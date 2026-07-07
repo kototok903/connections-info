@@ -1,4 +1,4 @@
-import type { WordLink } from "./types";
+import type { WordLink } from "../shared/types.js";
 
 export function linksForWord(word: string): WordLink[] {
   const lower = word.toLowerCase();

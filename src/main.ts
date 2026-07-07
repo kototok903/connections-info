@@ -1,7 +1,7 @@
 import { loadConnectionsPuzzle } from "./api";
-import { todayInNewYork } from "./date";
+import { todayInNewYork } from "../shared/date.js";
 import { linksForWord } from "./links";
-import type { ConnectionsPuzzle } from "./types";
+import type { ConnectionsPuzzle } from "../shared/types.js";
 import "./styles.css";
 
 const app = document.querySelector<HTMLDivElement>("#app");

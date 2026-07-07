@@ -1,5 +1,5 @@
-import { todayInNewYork, validatePuzzleDate } from "../src/date";
-import type { ConnectionsPuzzle } from "../src/types";
+import { todayInNewYork, validatePuzzleDate } from "../shared/date.js";
+import type { ConnectionsPuzzle } from "../shared/types.js";
 
 type NytConnectionsCard = {
   content?: unknown;
