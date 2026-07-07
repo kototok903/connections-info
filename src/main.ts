@@ -1,5 +1,9 @@
 import { loadConnectionsPuzzle } from "./api";
-import { formatDate, todayInLocalTimezone } from "../shared/date.js";
+import {
+  formatDate,
+  todayInLocalTimezone,
+  validatePuzzleDate,
+} from "../shared/date.js";
 import { linksForWord } from "./links";
 import type { ConnectionsPuzzle } from "../shared/types.js";
 import "./styles.css";
@@ -46,10 +50,19 @@ const elements = {
   wordGrid,
 };
 
-dateInput.value = todayInLocalTimezone();
+dateInput.value = dateFromUrl() ?? todayInLocalTimezone();
+syncUrlDate(dateInput.value, "replace");
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  syncUrlDate(elements.dateInput.value, "push");
   void loadPuzzle(elements.dateInput.value);
+});
+
+window.addEventListener("popstate", () => {
+  const date = dateFromUrl() ?? todayInLocalTimezone();
+  elements.dateInput.value = date;
+  void loadPuzzle(date);
 });
 
 void loadPuzzle(elements.dateInput.value);
@@ -118,4 +131,30 @@ function getFavicon(domain: string, size: number = 64): string {
   const urlObj = new URL(domain);
   const cleanDomain = urlObj.hostname;
   return `https://www.google.com/s2/favicons?domain=${cleanDomain}&sz=${size}`;
+}
+
+function dateFromUrl(): string | null {
+  const date = new URLSearchParams(window.location.search).get("date")?.trim();
+
+  if (!date || validatePuzzleDate(date)) {
+    return null;
+  }
+
+  return date;
+}
+
+function syncUrlDate(date: string, mode: "push" | "replace"): void {
+  const url = new URL(window.location.href);
+  url.searchParams.set("date", date);
+
+  if (url.href === window.location.href) {
+    return;
+  }
+
+  if (mode === "push") {
+    window.history.pushState(null, "", url);
+    return;
+  }
+
+  window.history.replaceState(null, "", url);
 }
