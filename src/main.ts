@@ -143,7 +143,7 @@ async function loadPuzzle(date: string): Promise<void> {
     const puzzle = await loadConnectionsPuzzle(date);
     currentPuzzle = puzzle;
     renderPuzzle(puzzle);
-    setStatus(`Loaded words for ${formatDate(puzzle.date)}.`);
+    setStatus(`Words for ${formatDate(puzzle.date)}.`);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to load puzzle.";
