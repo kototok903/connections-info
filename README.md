@@ -1,6 +1,6 @@
 # Connections Info
 
-Wrapper with research links for New York Times Connections.
+Wrapper for New York Times Connections with convenient research links per word.
 
 ## Stack
 
