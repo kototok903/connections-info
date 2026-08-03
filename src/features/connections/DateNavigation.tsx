@@ -3,7 +3,11 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/features/connections/DatePicker";
-import { dateFromIsoDate, isoDateFromDate } from "#shared/date.js";
+import {
+  dateFromIsoDate,
+  EARLIEST_CONNECTIONS_DATE,
+  isoDateFromDate,
+} from "#shared/date.js";
 
 type DateNavigationProps = {
   date: string;
@@ -27,6 +31,7 @@ export function DateNavigation({ date, onDateChange }: DateNavigationProps) {
         type="button"
         size="icon"
         aria-label="Previous day"
+        disabled={date <= EARLIEST_CONNECTIONS_DATE}
         onClick={() => moveBy(-1)}
       >
         <ChevronLeftIcon />

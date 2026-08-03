@@ -9,7 +9,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { dateFromIsoDate, isoDateFromDate } from "#shared/date.js";
+import {
+  dateFromIsoDate,
+  EARLIEST_CONNECTIONS_DATE,
+  isoDateFromDate,
+} from "#shared/date.js";
+
+const earliestConnectionsDate = dateFromIsoDate(EARLIEST_CONNECTIONS_DATE);
 
 type DatePickerProps = {
   date: string;
@@ -41,6 +47,12 @@ export function DatePicker({ date, onDateChange }: DatePickerProps) {
           mode="single"
           selected={selectedDate ?? undefined}
           defaultMonth={selectedDate ?? undefined}
+          startMonth={earliestConnectionsDate ?? undefined}
+          disabled={
+            earliestConnectionsDate
+              ? { before: earliestConnectionsDate }
+              : undefined
+          }
           timeZone={timeZone}
           onSelect={(nextDate) => {
             if (!nextDate) {

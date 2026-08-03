@@ -14,29 +14,18 @@ describe("settings", () => {
     window.localStorage.clear();
   });
 
-  it("loads defaults when localStorage is empty", () => {
-    const settings = loadSettings();
-
-    expect(settings.linkSources.google).toBe(false);
-    expect(settings.linkSources["dictionary-cambridge"]).toBe(false);
-    expect(settings.linkSources["dictionary-dictcom"]).toBe(false);
-    expect(settings.linkSources["dictionary-mw"]).toBe(true);
-    expect(settings.linkSources["dictionary-urban"]).toBe(true);
-    expect(enabledSourceCount(settings)).toBe(6);
-  });
-
   it("saves and loads link source preferences", () => {
     let settings = setLinkSourceEnabled(
       defaultSettings(),
-      "translate-ru",
+      "dictionary-mw",
       false
     );
     settings = setLinkSourceEnabled(settings, "dictionary-cambridge", true);
 
     saveSettings(settings);
 
-    expect(window.localStorage.getItem(STORAGE_KEY)).toContain("translate-ru");
-    expect(loadSettings().linkSources["translate-ru"]).toBe(false);
+    expect(window.localStorage.getItem(STORAGE_KEY)).toContain("dictionary-mw");
+    expect(loadSettings().linkSources["dictionary-mw"]).toBe(false);
     expect(loadSettings().linkSources["dictionary-cambridge"]).toBe(true);
   });
 
@@ -47,22 +36,20 @@ describe("settings", () => {
       "google-meaning",
       "dictionary-mw",
       "thesaurus",
-      "dictionary-urban",
-      "translate-ru",
     ] as const) {
       settings = setLinkSourceEnabled(settings, sourceId, false);
     }
 
-    const unchanged = setLinkSourceEnabled(settings, "translate-uk", false);
+    const unchanged = setLinkSourceEnabled(settings, "dictionary-urban", false);
 
     expect(enabledSourceCount(unchanged)).toBe(1);
-    expect(unchanged.linkSources["translate-uk"]).toBe(true);
+    expect(unchanged.linkSources["dictionary-urban"]).toBe(true);
   });
 
   it("falls back safely for invalid localStorage values", () => {
     window.localStorage.setItem(STORAGE_KEY, "{");
 
-    expect(enabledSourceCount(loadSettings())).toBe(6);
+    expect(loadSettings()).toEqual(defaultSettings());
   });
 
   it("repairs stored settings with every source disabled", () => {

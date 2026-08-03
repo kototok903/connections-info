@@ -3,11 +3,13 @@ import { describe, expect, it } from "vitest";
 import { parseNytConnections } from "#api/connections";
 
 describe("parseNytConnections", () => {
-  it("extracts only words sorted by position", () => {
+  it("preserves categories and assigns their semantic colors", () => {
     const result = parseNytConnections(
       {
         status: "OK",
+        id: 1001,
         print_date: "2026-07-07",
+        editor: "Test Editor",
         categories: [
           {
             title: "spoiler",
@@ -51,31 +53,74 @@ describe("parseNytConnections", () => {
     );
 
     expect(result).toEqual({
-      date: "2026-07-07",
-      words: [
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
+      categories: [
+        {
+          color: "yellow",
+          title: "spoiler",
+          words: [
+            { word: "B", position: 1 },
+            { word: "D", position: 3 },
+            { word: "A", position: 0 },
+            { word: "C", position: 2 },
+          ],
+        },
+        {
+          color: "green",
+          title: "spoiler",
+          words: [
+            { word: "F", position: 5 },
+            { word: "E", position: 4 },
+            { word: "G", position: 6 },
+            { word: "H", position: 7 },
+          ],
+        },
+        {
+          color: "blue",
+          title: "spoiler",
+          words: [
+            { word: "L", position: 11 },
+            { word: "I", position: 8 },
+            { word: "K", position: 10 },
+            { word: "J", position: 9 },
+          ],
+        },
+        {
+          color: "purple",
+          title: "spoiler",
+          words: [
+            { word: "N", position: 13 },
+            { word: "M", position: 12 },
+            { word: "P", position: 15 },
+            { word: "O", position: 14 },
+          ],
+        },
       ],
+      date: "2026-07-07",
+      editor: "Test Editor",
+      id: 1001,
     });
   });
 
   it("rejects incomplete puzzles", () => {
     expect(() =>
       parseNytConnections({ categories: [{ cards: [] }] }, "2026-07-07")
-    ).toThrow("Expected 16 puzzle words");
+    ).toThrow("Expected 4 puzzle categories");
+  });
+
+  it("rejects repeated board positions", () => {
+    const categories = Array.from({ length: 4 }, (_, categoryIndex) => ({
+      title: `Category ${categoryIndex}`,
+      cards: Array.from({ length: 4 }, (_, wordIndex) => ({
+        content: `Word ${categoryIndex}-${wordIndex}`,
+        position:
+          categoryIndex === 3 && wordIndex === 3
+            ? 0
+            : categoryIndex * 4 + wordIndex,
+      })),
+    }));
+
+    expect(() => parseNytConnections({ categories }, "2026-07-07")).toThrow(
+      "positions were not unique"
+    );
   });
 });

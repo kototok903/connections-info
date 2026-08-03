@@ -1,42 +1,56 @@
-import { Favicon } from "@/components/Favicon";
-import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { linksForWord } from "@/features/connections/links";
-import { cn } from "@/lib/utils";
-import type { LinkSourceId } from "#shared/types.js";
+import { motion, useAnimate } from "motion/react";
+import { useEffect } from "react";
+
+import { Button } from "@/components/ui/button";
 
 type WordCardProps = {
-  enabledSourceIds: ReadonlySet<LinkSourceId>;
+  disabled: boolean;
+  onSelect: () => void;
+  selected: boolean;
+  shakeId: number | null;
   word: string;
 };
 
-export function WordCard({ enabledSourceIds, word }: WordCardProps) {
+export function WordCard({
+  disabled,
+  onSelect,
+  selected,
+  shakeId,
+  word,
+}: WordCardProps) {
+  const [scope, animate] = useAnimate();
+
+  useEffect(() => {
+    if (shakeId === null) {
+      return;
+    }
+
+    void animate(
+      scope.current,
+      { x: [0, -8, 8, -6, 6, -3, 3, 0] },
+      { duration: 0.42 }
+    );
+  }, [animate, scope, shakeId]);
+
   return (
-    <article>
-      <Card size="sm" className="h-full min-h-30 justify-between bg-tile">
-        <CardHeader>
-          <CardTitle className="text-base font-black wrap-anywhere uppercase">
-            {word}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-wrap content-end gap-1.5">
-          {linksForWord(word, enabledSourceIds).map((link) => (
-            <a
-              key={link.sourceId}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                buttonVariants({ size: "sm", variant: "outline" }),
-                "min-w-0"
-              )}
-            >
-              <Favicon sourceUrl={link.href} />
-              {link.label}
-            </a>
-          ))}
-        </CardContent>
-      </Card>
-    </article>
+    <motion.div
+      ref={scope}
+      layout
+      transition={{
+        layout: { duration: 0.28, ease: "easeInOut" },
+      }}
+    >
+      <Button
+        type="button"
+        variant="tile"
+        size="tile"
+        disabled={disabled}
+        aria-pressed={selected}
+        onClick={onSelect}
+        className="w-full disabled:opacity-100"
+      >
+        <span className="wrap-anywhere">{word}</span>
+      </Button>
+    </motion.div>
   );
 }

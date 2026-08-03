@@ -15,6 +15,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
           "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
+        tile: "border-transparent bg-tile text-foreground hover:bg-tile-hover aria-pressed:bg-primary aria-pressed:text-primary-foreground",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
@@ -31,6 +32,7 @@ const buttonVariants = cva(
         "icon-sm":
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
+        tile: "aspect-[1.35] h-auto min-h-16 text-[clamp(0.75rem,2.6vw,1rem)] leading-tight font-bold whitespace-normal uppercase sm:aspect-[1.7] sm:min-h-24 sm:px-2 sm:text-base",
       },
     },
     defaultVariants: {

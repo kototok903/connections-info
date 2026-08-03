@@ -1,5 +1,7 @@
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
+export const EARLIEST_CONNECTIONS_DATE = "2023-06-12";
+
 export function todayInNewYork(now = new Date()): string {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/New_York",
@@ -53,6 +55,10 @@ export function validatePuzzleDate(date: string): string | null {
     parsed.getUTCDate() !== day
   ) {
     return "Date is invalid.";
+  }
+
+  if (date < EARLIEST_CONNECTIONS_DATE) {
+    return `Connections puzzles start on ${EARLIEST_CONNECTIONS_DATE}.`;
   }
 
   return null;

@@ -1,6 +1,23 @@
+export const CONNECTION_COLORS = ["yellow", "green", "blue", "purple"] as const;
+
+export type ConnectionColor = (typeof CONNECTION_COLORS)[number];
+
+export type ConnectionsWord = {
+  position: number;
+  word: string;
+};
+
+export type ConnectionsCategory = {
+  color: ConnectionColor;
+  title: string;
+  words: ConnectionsWord[];
+};
+
 export type ConnectionsPuzzle = {
+  categories: ConnectionsCategory[];
   date: string;
-  words: string[];
+  editor: string | null;
+  id: number | null;
 };
 
 export const LINK_SOURCE_IDS = [

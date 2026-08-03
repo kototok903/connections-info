@@ -1,5 +1,7 @@
-import type { ConnectionsPuzzle } from "#shared/types.js";
+import { CONNECTION_COLORS, type ConnectionsPuzzle } from "#shared/types.js";
 import { isRecord } from "#shared/utils.js";
+
+const CONNECTIONS_API_SCHEMA_VERSION = "2";
 
 export async function loadConnectionsPuzzle(
   date: string,
@@ -7,6 +9,7 @@ export async function loadConnectionsPuzzle(
 ): Promise<ConnectionsPuzzle> {
   const url = new URL("/api/connections", window.location.origin);
   url.searchParams.set("date", date);
+  url.searchParams.set("schema", CONNECTIONS_API_SCHEMA_VERSION);
 
   const response = await fetch(url, { signal });
   const data = await readJsonResponse(response);
@@ -41,7 +44,27 @@ function isConnectionsPuzzle(value: unknown): value is ConnectionsPuzzle {
   return (
     isRecord(value) &&
     typeof value.date === "string" &&
-    Array.isArray(value.words) &&
-    value.words.every((word) => typeof word === "string")
+    (typeof value.id === "number" || value.id === null) &&
+    (typeof value.editor === "string" || value.editor === null) &&
+    Array.isArray(value.categories) &&
+    value.categories.length === CONNECTION_COLORS.length &&
+    value.categories.every((category, categoryIndex) => {
+      if (!isRecord(category)) {
+        return false;
+      }
+
+      return (
+        category.color === CONNECTION_COLORS[categoryIndex] &&
+        typeof category.title === "string" &&
+        Array.isArray(category.words) &&
+        category.words.length === 4 &&
+        category.words.every(
+          (word) =>
+            isRecord(word) &&
+            typeof word.word === "string" &&
+            typeof word.position === "number"
+        )
+      );
+    })
   );
 }

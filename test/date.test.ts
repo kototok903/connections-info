@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   dateFromIsoDate,
+  EARLIEST_CONNECTIONS_DATE,
   isoDateFromDate,
   todayInLocalTimezone,
   todayInNewYork,
@@ -20,6 +21,10 @@ describe("date helpers", () => {
       "Date must use YYYY-MM-DD format."
     );
     expect(validatePuzzleDate("2026-02-31")).toBe("Date is invalid.");
+    expect(validatePuzzleDate(EARLIEST_CONNECTIONS_DATE)).toBeNull();
+    expect(validatePuzzleDate("2023-06-11")).toBe(
+      "Connections puzzles start on 2023-06-12."
+    );
   });
 
   it("formats today using the runtime local timezone", () => {

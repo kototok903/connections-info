@@ -79,8 +79,6 @@ export const DEFAULT_LINK_SOURCE_IDS: LinkSourceId[] = [
   "dictionary-mw",
   "dictionary-urban",
   "thesaurus",
-  "translate-ru",
-  "translate-uk",
 ];
 
 export function linksForWord(

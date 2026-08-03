@@ -4,15 +4,21 @@ import { linksForWord } from "@/features/connections/links";
 
 describe("linksForWord", () => {
   it("builds research links for a word", () => {
-    const links = linksForWord("tinderbox");
+    const links = linksForWord(
+      "tinderbox",
+      new Set([
+        "google-meaning",
+        "dictionary-mw",
+        "dictionary-urban",
+        "thesaurus",
+      ])
+    );
 
     expect(links.map((link) => link.label)).toEqual([
       "Meaning",
       "Dictionary",
       "Urban",
       "Thesaurus",
-      "RU",
-      "UK",
     ]);
     expect(links[0].href).toBe(
       "https://www.google.com/search?q=tinderbox+meaning"
@@ -24,8 +30,6 @@ describe("linksForWord", () => {
       "https://www.urbandictionary.com/define.php?term=tinderbox"
     );
     expect(links[3].href).toBe("https://www.thesaurus.com/browse/tinderbox");
-    expect(links[4].href).toContain("tl=ru");
-    expect(links[5].href).toContain("tl=uk");
   });
 
   it("filters links by enabled source ids", () => {
@@ -41,8 +45,10 @@ describe("linksForWord", () => {
   });
 
   it("normalizes multi-word dictionary URLs", () => {
-    const dictionary = linksForWord("ice cream")[1];
-    const thesaurus = linksForWord("ice cream")[3];
+    const [dictionary, thesaurus] = linksForWord(
+      "ice cream",
+      new Set(["dictionary-mw", "thesaurus"])
+    );
 
     expect(dictionary.href).toBe(
       "https://www.merriam-webster.com/dictionary/ice-cream"

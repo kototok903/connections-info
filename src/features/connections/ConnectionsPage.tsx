@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { Separator } from "@/components/ui/separator";
+import { ConnectionsGame } from "@/features/connections/ConnectionsGame";
 import { DateNavigation } from "@/features/connections/DateNavigation";
 import { useConnectionsPuzzle } from "@/features/connections/useConnectionsPuzzle";
-import { WordGrid } from "@/features/connections/WordGrid";
 import { enabledSourceIds } from "@/features/settings/settings-store";
 import { SettingsDialog } from "@/features/settings/SettingsDialog";
 import { useSettings } from "@/features/settings/useSettings";
@@ -38,13 +38,13 @@ export function ConnectionsPage() {
   return (
     <main className="mx-auto w-[min(calc(100%-1.5rem),61.25rem)] py-5 sm:w-[min(calc(100%-2rem),61.25rem)] sm:py-7">
       <header className="flex items-center justify-between gap-4">
-        <h1 className="font-serif text-3xl leading-none font-bold">
+        <h1 className="font-serif text-2xl leading-none font-bold sm:text-3xl">
           Connections Info
         </h1>
         <SettingsDialog settings={settings} onSourceChange={updateSource} />
       </header>
 
-      <Separator className="mt-4 mb-4" />
+      <Separator className="my-4" />
 
       <DateNavigation date={date} onDateChange={changeDate} />
 
@@ -54,7 +54,7 @@ export function ConnectionsPage() {
         className="my-4 text-center text-sm"
       >
         {request.status === "loading" ? (
-          <span className="text-muted-foreground">Loading puzzle words...</span>
+          <span className="text-muted-foreground">Loading puzzle...</span>
         ) : null}
         {request.status === "error" ? (
           <span className="font-semibold text-destructive">
@@ -64,7 +64,8 @@ export function ConnectionsPage() {
       </div>
 
       {request.status === "success" ? (
-        <WordGrid
+        <ConnectionsGame
+          key={`${request.puzzle.id ?? "puzzle"}-${request.puzzle.date}`}
           puzzle={request.puzzle}
           enabledSourceIds={enabledSourceIds(settings)}
         />

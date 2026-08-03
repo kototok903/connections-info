@@ -8,6 +8,10 @@
 @theme inline {
   --color-tile: var(--tile);
   --color-tile-hover: var(--tile-hover);
+  --color-connection-blue: var(--connection-blue);
+  --color-connection-green: var(--connection-green);
+  --color-connection-purple: var(--connection-purple);
+  --color-connection-yellow: var(--connection-yellow);
   --font-heading: var(--font-sans);
   --font-sans: "Geist Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -54,6 +58,10 @@
   color-scheme: light;
   --tile: #efefe6;
   --tile-hover: #e5e5d8;
+  --connection-yellow: #f5d867;
+  --connection-green: #a8c785;
+  --connection-blue: #8bb9dc;
+  --connection-purple: #b79ad1;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);

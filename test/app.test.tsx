@@ -42,11 +42,11 @@ describe("Connections app", () => {
   it("loads and renders the puzzle selected in the URL", async () => {
     render(<App />);
 
-    expect(screen.getByText("Loading puzzle words...")).toBeInTheDocument();
+    expect(screen.getByText("Loading puzzle...")).toBeInTheDocument();
     expect(await screen.findByText("ALPHA")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        search: "?date=2026-07-07",
+        search: "?date=2026-07-07&schema=2",
       }),
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     );
@@ -64,7 +64,7 @@ describe("Connections app", () => {
       expect(window.location.search).toBe("?date=2026-07-06");
     });
     expect(fetchMock).toHaveBeenLastCalledWith(
-      expect.objectContaining({ search: "?date=2026-07-06" }),
+      expect.objectContaining({ search: "?date=2026-07-06&schema=2" }),
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     );
   });
@@ -84,28 +84,94 @@ describe("Connections app", () => {
     });
   });
 
+  it("prevents navigation before the first Connections puzzle", async () => {
+    window.history.replaceState(null, "", "/?date=2023-06-12");
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    expect(screen.getByRole("button", { name: "Previous day" })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole("button", { name: "June 12th, 2023" }));
+    expect(
+      await screen.findByRole("button", { name: /Sunday, June 11/ })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: /Monday, June 12/ })
+    ).toBeEnabled();
+  });
+
   it("persists source settings and updates word links", async () => {
     render(<App />);
     await screen.findByText("ALPHA");
 
-    const alphaCard = screen.getByText("ALPHA").closest("article");
-    expect(alphaCard).not.toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "ALPHA" }));
     expect(
-      within(alphaCard!).getByRole("link", { name: "Dictionary" })
+      within(screen.getByRole("region", { name: "Research ALPHA" })).getByRole(
+        "link",
+        { name: "Dictionary" }
+      )
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Open settings" }));
     fireEvent.click(
       await screen.findByRole("switch", { name: "Merriam-Webster" })
     );
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
 
     expect(
-      within(alphaCard!).queryByRole("link", { name: "Dictionary" })
+      within(
+        screen.getByRole("region", { name: "Research ALPHA" })
+      ).queryByRole("link", { name: "Dictionary" })
     ).not.toBeInTheDocument();
     expect(
       window.localStorage.getItem("connections-info:settings:v1")
     ).toContain('"dictionary-mw":false');
   });
+
+  it("shows research sources only when exactly one word is selected", async () => {
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    expect(
+      screen.queryByRole("region", { name: /Research/ })
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "ALPHA" }));
+    expect(
+      screen.getByRole("region", { name: "Research ALPHA" })
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "BRAVO" }));
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("region", { name: /Research/ })
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it("keeps the fourth category playable and opens results after it is submitted", async () => {
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    await solveWords(["ALPHA", "BRAVO", "CHARLIE", "DELTA"], "First");
+    await solveWords(["ECHO", "FOXTROT", "GOLF", "HOTEL"], "Second");
+    await solveWords(["INDIA", "JULIET", "KILO", "LIMA"], "Third");
+
+    expect(screen.getByRole("button", { name: "MIKE" })).toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    await solveWords(["MIKE", "NOVEMBER", "OSCAR", "PAPA"], "Fourth");
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    expect(within(screen.getByRole("dialog")).getAllByRole("img")).toHaveLength(
+      16
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(screen.getByRole("button", { name: "Replay" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Results" })).toBeInTheDocument();
+  }, 8_000);
 
   it("shows API errors without rendering stale cards", async () => {
     fetchMock.mockResolvedValue(
@@ -125,12 +191,44 @@ describe("Connections app", () => {
 function puzzleResponse() {
   return new Response(
     JSON.stringify({
+      categories: [
+        category("yellow", "First", 0),
+        category("green", "Second", 4),
+        category("blue", "Third", 8),
+        category("purple", "Fourth", 12),
+      ],
       date: "2026-07-07",
-      words,
+      editor: "Test Editor",
+      id: 1001,
     }),
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
     }
   );
+}
+
+function category(
+  color: "yellow" | "green" | "blue" | "purple",
+  title: string,
+  startPosition: number
+) {
+  return {
+    color,
+    title,
+    words: words.slice(startPosition, startPosition + 4).map((word, index) => ({
+      position: startPosition + index,
+      word,
+    })),
+  };
+}
+
+async function solveWords(group: string[], title: string) {
+  for (const word of group) {
+    fireEvent.click(screen.getByRole("button", { name: word }));
+  }
+  fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+  expect(
+    await screen.findByRole("heading", { name: title })
+  ).toBeInTheDocument();
 }

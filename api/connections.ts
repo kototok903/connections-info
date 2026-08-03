@@ -1,5 +1,9 @@
 import { todayInNewYork, validatePuzzleDate } from "#shared/date.js";
-import type { ConnectionsPuzzle } from "#shared/types.js";
+import {
+  CONNECTION_COLORS,
+  type ConnectionsCategory,
+  type ConnectionsPuzzle,
+} from "#shared/types.js";
 import { isRecord } from "#shared/utils.js";
 
 type NytConnectionsCard = {
@@ -9,11 +13,14 @@ type NytConnectionsCard = {
 
 type NytConnectionsCategory = {
   cards?: unknown;
+  title?: unknown;
 };
 
 type NytConnectionsResponse = {
-  print_date?: unknown;
   categories?: unknown;
+  editor?: unknown;
+  id?: unknown;
+  print_date?: unknown;
 };
 
 const NYT_ENDPOINT = "https://www.nytimes.com/svc/connections/v2";
@@ -91,51 +98,102 @@ export function parseNytConnections(
     throw new Error("NYT response did not include categories.");
   }
 
-  const cards = response.categories.flatMap((category) => {
-    if (!isRecord(category)) {
-      return [];
-    }
-
-    const typedCategory = category as NytConnectionsCategory;
-    if (!Array.isArray(typedCategory.cards)) {
-      return [];
-    }
-
-    return typedCategory.cards
-      .filter(isRecord)
-      .map((card): { word: string; position: number } | null => {
-        const typedCard = card as NytConnectionsCard;
-        if (typeof typedCard.content !== "string") {
-          return null;
-        }
-
-        return {
-          word: typedCard.content,
-          position:
-            typeof typedCard.position === "number"
-              ? typedCard.position
-              : Number.MAX_SAFE_INTEGER,
-        };
-      })
-      .filter(
-        (card): card is { word: string; position: number } => card !== null
-      );
-  });
-
-  if (cards.length !== 16) {
-    throw new Error(`Expected 16 puzzle words, received ${cards.length}.`);
+  if (response.categories.length !== CONNECTION_COLORS.length) {
+    throw new Error(
+      `Expected 4 puzzle categories, received ${response.categories.length}.`
+    );
   }
 
+  const categories = response.categories.map((category, categoryIndex) =>
+    parseCategory(category, categoryIndex)
+  );
+  validateUniqueWordsAndPositions(categories);
+
   return {
+    categories,
     date:
       typeof response.print_date === "string"
         ? response.print_date
         : fallbackDate,
-    words: cards
-      .slice()
-      .sort((left, right) => left.position - right.position)
-      .map((card) => card.word),
+    editor: typeof response.editor === "string" ? response.editor : null,
+    id: typeof response.id === "number" ? response.id : null,
   };
+}
+
+function parseCategory(
+  category: unknown,
+  categoryIndex: number
+): ConnectionsCategory {
+  if (!isRecord(category)) {
+    throw new Error(`Puzzle category ${categoryIndex + 1} was not an object.`);
+  }
+
+  const typedCategory = category as NytConnectionsCategory;
+  if (typeof typedCategory.title !== "string" || !typedCategory.title.trim()) {
+    throw new Error(`Puzzle category ${categoryIndex + 1} had no title.`);
+  }
+
+  if (!Array.isArray(typedCategory.cards) || typedCategory.cards.length !== 4) {
+    const cardCount = Array.isArray(typedCategory.cards)
+      ? typedCategory.cards.length
+      : 0;
+    throw new Error(
+      `Expected 4 words in category ${categoryIndex + 1}, received ${cardCount}.`
+    );
+  }
+
+  const words = typedCategory.cards.map((card, wordIndex) => {
+    if (!isRecord(card)) {
+      throw new Error(
+        `Word ${wordIndex + 1} in category ${categoryIndex + 1} was invalid.`
+      );
+    }
+
+    const typedCard = card as NytConnectionsCard;
+    if (typeof typedCard.content !== "string" || !typedCard.content.trim()) {
+      throw new Error(
+        `Word ${wordIndex + 1} in category ${categoryIndex + 1} was empty.`
+      );
+    }
+
+    if (
+      typeof typedCard.position !== "number" ||
+      !Number.isInteger(typedCard.position) ||
+      typedCard.position < 0 ||
+      typedCard.position > 15
+    ) {
+      throw new Error(
+        `Puzzle word ${typedCard.content} had an invalid position.`
+      );
+    }
+
+    return {
+      position: typedCard.position,
+      word: typedCard.content,
+    };
+  });
+
+  return {
+    color: CONNECTION_COLORS[categoryIndex],
+    title: typedCategory.title,
+    words,
+  };
+}
+
+function validateUniqueWordsAndPositions(
+  categories: ConnectionsCategory[]
+): void {
+  const words = categories.flatMap((category) => category.words);
+  const normalizedWords = new Set(words.map(({ word }) => word.toUpperCase()));
+  const positions = new Set(words.map(({ position }) => position));
+
+  if (normalizedWords.size !== 16) {
+    throw new Error("Puzzle words were not unique.");
+  }
+
+  if (positions.size !== 16) {
+    throw new Error("Puzzle word positions were not unique.");
+  }
 }
 
 function jsonResponse(
