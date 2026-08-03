@@ -5,6 +5,7 @@ import { isRecord } from "#shared/utils.js";
 export const STORAGE_KEY = "connections-info:settings:v1";
 
 export type AppSettings = {
+  showResearchSources: boolean;
   linkSources: Record<LinkSourceId, boolean>;
 };
 
@@ -12,6 +13,7 @@ export function defaultSettings(): AppSettings {
   const defaultEnabledIds = new Set(DEFAULT_LINK_SOURCE_IDS);
 
   return {
+    showResearchSources: true,
     linkSources: Object.fromEntries(
       LINK_SOURCE_IDS.map((sourceId) => [
         sourceId,
@@ -22,13 +24,18 @@ export function defaultSettings(): AppSettings {
 }
 
 export function enabledSourceIds(settings: AppSettings): Set<LinkSourceId> {
+  if (!settings.showResearchSources) {
+    return new Set();
+  }
+
   return new Set(
     LINK_SOURCE_IDS.filter((sourceId) => settings.linkSources[sourceId])
   );
 }
 
 export function enabledSourceCount(settings: AppSettings): number {
-  return enabledSourceIds(settings).size;
+  return LINK_SOURCE_IDS.filter((sourceId) => settings.linkSources[sourceId])
+    .length;
 }
 
 export function loadSettings(): AppSettings {
@@ -73,6 +80,13 @@ export function setLinkSourceEnabled(
   };
 }
 
+export function setShowResearchSources(
+  settings: AppSettings,
+  showResearchSources: boolean
+): AppSettings {
+  return { ...settings, showResearchSources };
+}
+
 function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
   if (!isRecord(value) || !isRecord(value.linkSources)) {
     return fallback;
@@ -81,6 +95,10 @@ function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
   const storedLinkSources = value.linkSources;
 
   return {
+    showResearchSources:
+      typeof value.showResearchSources === "boolean"
+        ? value.showResearchSources
+        : fallback.showResearchSources,
     linkSources: Object.fromEntries(
       LINK_SOURCE_IDS.map((sourceId) => [
         sourceId,

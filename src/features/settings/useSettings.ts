@@ -5,11 +5,13 @@ import {
   loadSettings,
   saveSettings,
   setLinkSourceEnabled,
+  setShowResearchSources,
 } from "@/features/settings/settings-store";
 import type { LinkSourceId } from "#shared/types.js";
 
 type UseSettingsResult = {
   settings: AppSettings;
+  updateShowResearchSources: (isEnabled: boolean) => void;
   updateSource: (sourceId: LinkSourceId, isEnabled: boolean) => void;
 };
 
@@ -27,5 +29,13 @@ export function useSettings(): UseSettingsResult {
     []
   );
 
-  return { settings, updateSource };
+  const updateShowResearchSources = useCallback((isEnabled: boolean) => {
+    setSettings((current) => {
+      const next = setShowResearchSources(current, isEnabled);
+      saveSettings(next);
+      return next;
+    });
+  }, []);
+
+  return { settings, updateShowResearchSources, updateSource };
 }

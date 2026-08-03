@@ -162,6 +162,34 @@ describe("Connections app", () => {
     ).toContain('"dictionary-mw":false');
   });
 
+  it("hides research sources and disables their settings", async () => {
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    fireEvent.click(screen.getByRole("button", { name: "ALPHA" }));
+    expect(
+      screen.getByRole("region", { name: "Research ALPHA" })
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Open settings" }));
+    const masterSwitch = await screen.findByRole("switch", {
+      name: "Show Research sources",
+    });
+    expect(masterSwitch).toBeChecked();
+
+    fireEvent.click(masterSwitch);
+
+    expect(
+      screen.getByRole("switch", { name: "Merriam-Webster" })
+    ).toHaveAttribute("aria-disabled", "true");
+    expect(
+      screen.queryByRole("region", { name: "Research ALPHA" })
+    ).not.toBeInTheDocument();
+    expect(
+      window.localStorage.getItem("connections-info:settings:v1")
+    ).toContain('"showResearchSources":false');
+  });
+
   it("shows research sources only when exactly one word is selected", async () => {
     render(<App />);
     await screen.findByText("ALPHA");

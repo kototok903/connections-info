@@ -13,7 +13,7 @@ export function ConnectionsPage() {
   const initialDate = getDateFromUrl() ?? todayInLocalTimezone();
   const [date, setDate] = useState(initialDate);
   const request = useConnectionsPuzzle(date);
-  const { settings, updateSource } = useSettings();
+  const { settings, updateShowResearchSources, updateSource } = useSettings();
 
   useEffect(() => {
     function handlePopState() {
@@ -37,7 +37,11 @@ export function ConnectionsPage() {
         <h1 className="font-serif text-2xl leading-none font-bold sm:text-3xl">
           Connections Info
         </h1>
-        <SettingsDialog settings={settings} onSourceChange={updateSource} />
+        <SettingsDialog
+          settings={settings}
+          onShowResearchSourcesChange={updateShowResearchSources}
+          onSourceChange={updateSource}
+        />
       </header>
 
       <Separator className="my-4" />

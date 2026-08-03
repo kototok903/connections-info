@@ -3,9 +3,11 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
   defaultSettings,
   enabledSourceCount,
+  enabledSourceIds,
   loadSettings,
   saveSettings,
   setLinkSourceEnabled,
+  setShowResearchSources,
   STORAGE_KEY,
 } from "@/features/settings/settings-store";
 
@@ -27,6 +29,16 @@ describe("settings", () => {
     expect(window.localStorage.getItem(STORAGE_KEY)).toContain("dictionary-mw");
     expect(loadSettings().linkSources["dictionary-mw"]).toBe(false);
     expect(loadSettings().linkSources["dictionary-cambridge"]).toBe(true);
+  });
+
+  it("hides all research sources without changing source preferences", () => {
+    const settings = setShowResearchSources(defaultSettings(), false);
+
+    expect(enabledSourceCount(settings)).toBe(4);
+    expect([...enabledSourceIds(settings)]).toEqual([]);
+
+    saveSettings(settings);
+    expect(loadSettings().showResearchSources).toBe(false);
   });
 
   it("prevents disabling the last enabled source", () => {

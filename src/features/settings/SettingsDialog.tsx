@@ -27,11 +27,13 @@ import type { LinkSourceId } from "#shared/types.js";
 
 type SettingsDialogProps = {
   settings: AppSettings;
+  onShowResearchSourcesChange: (isEnabled: boolean) => void;
   onSourceChange: (sourceId: LinkSourceId, isEnabled: boolean) => void;
 };
 
 export function SettingsDialog({
   settings,
+  onShowResearchSourcesChange,
   onSourceChange,
 }: SettingsDialogProps) {
   const enabledCount = enabledSourceCount(settings);
@@ -48,12 +50,32 @@ export function SettingsDialog({
           <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
 
-        <FieldSet className="overflow-y-auto">
+        <Field
+          orientation="horizontal"
+          className="rounded-lg px-2 py-2 hover:bg-muted"
+        >
+          <FieldLabel htmlFor="show-research-sources">
+            Show Research sources
+          </FieldLabel>
+          <Switch
+            id="show-research-sources"
+            checked={settings.showResearchSources}
+            onCheckedChange={onShowResearchSourcesChange}
+          />
+        </Field>
+
+        <FieldSet
+          disabled={!settings.showResearchSources}
+          data-disabled={!settings.showResearchSources || undefined}
+          className="overflow-y-auto"
+        >
           <FieldLegend variant="label">Research sources</FieldLegend>
           <FieldGroup className="gap-1 overflow-x-hidden">
             {Object.values(LINK_SOURCES).map((source) => {
               const checked = settings.linkSources[source.id];
-              const disabled = checked && enabledCount === 1;
+              const disabled =
+                !settings.showResearchSources ||
+                (checked && enabledCount === 1);
               const inputId = `source-${source.id}`;
 
               return (
