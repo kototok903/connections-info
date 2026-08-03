@@ -13,7 +13,12 @@ export function ConnectionsPage() {
   const initialDate = getDateFromUrl() ?? todayInLocalTimezone();
   const [date, setDate] = useState(initialDate);
   const request = useConnectionsPuzzle(date);
-  const { settings, updateShowResearchSources, updateSource } = useSettings();
+  const {
+    settings,
+    updateShowPastGuesses,
+    updateShowResearchSources,
+    updateSource,
+  } = useSettings();
 
   useEffect(() => {
     function handlePopState() {
@@ -39,6 +44,7 @@ export function ConnectionsPage() {
         </h1>
         <SettingsDialog
           settings={settings}
+          onShowPastGuessesChange={updateShowPastGuesses}
           onShowResearchSourcesChange={updateShowResearchSources}
           onSourceChange={updateSource}
         />
@@ -68,6 +74,7 @@ export function ConnectionsPage() {
           key={`${request.puzzle.id ?? "puzzle"}-${request.puzzle.date}`}
           puzzle={request.puzzle}
           enabledSourceIds={enabledSourceIds(settings)}
+          showPastGuesses={settings.showPastGuesses}
         />
       ) : null}
     </main>

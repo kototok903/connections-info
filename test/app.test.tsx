@@ -211,6 +211,33 @@ describe("Connections app", () => {
     });
   });
 
+  it("hides past guesses from settings without clearing them", async () => {
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    for (const word of ["ALPHA", "BRAVO", "CHARLIE", "ECHO"]) {
+      fireEvent.click(screen.getByRole("button", { name: word }));
+    }
+    fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+    expect(
+      screen.getByRole("heading", { name: "Past Guesses" })
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Open settings" }));
+    const visibilitySwitch = await screen.findByRole("switch", {
+      name: "Show Past Guesses",
+    });
+    expect(visibilitySwitch).toBeChecked();
+
+    fireEvent.click(visibilitySwitch);
+    expect(
+      screen.queryByRole("heading", { name: "Past Guesses" })
+    ).not.toBeInTheDocument();
+    expect(
+      window.localStorage.getItem("connections-info:settings:v1")
+    ).toContain('"showPastGuesses":false');
+  });
+
   it("keeps the fourth category playable and opens results after it is submitted", async () => {
     render(<App />);
     await screen.findByText("ALPHA");

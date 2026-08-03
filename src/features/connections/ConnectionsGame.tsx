@@ -7,6 +7,7 @@ import {
   shuffledWordOrder,
 } from "@/features/connections/game-state";
 import { GameActions } from "@/features/connections/GameActions";
+import { PastGuesses } from "@/features/connections/PastGuesses";
 import { ResearchLinks } from "@/features/connections/ResearchLinks";
 import { ResultsDialog } from "@/features/connections/ResultsDialog";
 import { WordGrid } from "@/features/connections/WordGrid";
@@ -15,6 +16,7 @@ import type { ConnectionsPuzzle, LinkSourceId } from "#shared/types.js";
 type ConnectionsGameProps = {
   enabledSourceIds: ReadonlySet<LinkSourceId>;
   puzzle: ConnectionsPuzzle;
+  showPastGuesses: boolean;
 };
 
 const RESOLUTION_DELAY_MS = 520;
@@ -24,6 +26,7 @@ const SHAKE_DURATION_MS = 450;
 export function ConnectionsGame({
   enabledSourceIds,
   puzzle,
+  showPastGuesses,
 }: ConnectionsGameProps) {
   const [game, dispatch] = useReducer(
     connectionsGameReducer,
@@ -102,7 +105,7 @@ export function ConnectionsGame({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col items-center gap-4">
       <WordGrid
         game={game}
         shake={shake}
@@ -126,6 +129,10 @@ export function ConnectionsGame({
       />
 
       <ResearchLinks word={selectedWord} enabledSourceIds={enabledSourceIds} />
+
+      {showPastGuesses ? (
+        <PastGuesses guesses={game.guesses} puzzle={puzzle} />
+      ) : null}
 
       <ResultsDialog
         open={resultsOpen}

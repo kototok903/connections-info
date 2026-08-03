@@ -5,6 +5,7 @@ import { isRecord } from "#shared/utils.js";
 export const STORAGE_KEY = "connections-info:settings:v1";
 
 export type AppSettings = {
+  showPastGuesses: boolean;
   showResearchSources: boolean;
   linkSources: Record<LinkSourceId, boolean>;
 };
@@ -13,6 +14,7 @@ export function defaultSettings(): AppSettings {
   const defaultEnabledIds = new Set(DEFAULT_LINK_SOURCE_IDS);
 
   return {
+    showPastGuesses: true,
     showResearchSources: true,
     linkSources: Object.fromEntries(
       LINK_SOURCE_IDS.map((sourceId) => [
@@ -87,6 +89,13 @@ export function setShowResearchSources(
   return { ...settings, showResearchSources };
 }
 
+export function setShowPastGuesses(
+  settings: AppSettings,
+  showPastGuesses: boolean
+): AppSettings {
+  return { ...settings, showPastGuesses };
+}
+
 function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
   if (!isRecord(value) || !isRecord(value.linkSources)) {
     return fallback;
@@ -95,6 +104,10 @@ function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
   const storedLinkSources = value.linkSources;
 
   return {
+    showPastGuesses:
+      typeof value.showPastGuesses === "boolean"
+        ? value.showPastGuesses
+        : fallback.showPastGuesses,
     showResearchSources:
       typeof value.showResearchSources === "boolean"
         ? value.showResearchSources

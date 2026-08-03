@@ -7,6 +7,7 @@ import {
   loadSettings,
   saveSettings,
   setLinkSourceEnabled,
+  setShowPastGuesses,
   setShowResearchSources,
   STORAGE_KEY,
 } from "@/features/settings/settings-store";
@@ -39,6 +40,14 @@ describe("settings", () => {
 
     saveSettings(settings);
     expect(loadSettings().showResearchSources).toBe(false);
+  });
+
+  it("saves the past guesses visibility preference", () => {
+    const settings = setShowPastGuesses(defaultSettings(), false);
+
+    saveSettings(settings);
+
+    expect(loadSettings().showPastGuesses).toBe(false);
   });
 
   it("prevents disabling the last enabled source", () => {
