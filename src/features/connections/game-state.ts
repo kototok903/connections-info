@@ -150,7 +150,11 @@ function submitGuess(
   if (state.submittedGuessKeys.includes(guessKey)) {
     return {
       ...state,
-      event: { id: state.event.id + 1, type: "duplicate" },
+      event: {
+        id: state.event.id + 1,
+        oneAway: isOneAwayGuess(puzzle, state.selectedPositions),
+        type: "duplicate",
+      },
     };
   }
 
@@ -178,12 +182,7 @@ function submitGuess(
     );
   }
 
-  const oneAway = puzzle.categories.some(
-    (category) =>
-      category.words.filter(({ position }) =>
-        state.selectedPositions.includes(position)
-      ).length === 3
-  );
+  const oneAway = isOneAwayGuess(puzzle, state.selectedPositions);
 
   return {
     ...state,
@@ -202,6 +201,18 @@ function submitGuess(
           : state.mistakesRemaining - 1,
     submittedGuessKeys,
   };
+}
+
+function isOneAwayGuess(
+  puzzle: ConnectionsPuzzle,
+  selectedPositions: readonly number[]
+): boolean {
+  return puzzle.categories.some(
+    (category) =>
+      category.words.filter(({ position }) =>
+        selectedPositions.includes(position)
+      ).length === 3
+  );
 }
 
 function revealAnswers(

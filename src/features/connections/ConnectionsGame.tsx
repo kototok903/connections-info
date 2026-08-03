@@ -73,7 +73,9 @@ export function ConnectionsGame({
 
   useEffect(() => {
     if (game.event.type === "duplicate") {
-      toast("Already guessed");
+      toast(
+        game.event.oneAway ? "Already guessed, One Away" : "Already guessed"
+      );
     } else if (game.event.type === "incorrect" && game.event.oneAway) {
       toast("One Away");
     }

@@ -92,6 +92,17 @@ describe("connectionsGameReducer", () => {
     expect(state.guesses).toHaveLength(1);
   });
 
+  it("preserves one-away feedback for a duplicate guess", () => {
+    let state = selectAndSubmit(
+      createConnectionsGameState(puzzle),
+      [0, 1, 2, 4]
+    );
+
+    state = connectionsGameReducer(state, { type: "submit", puzzle });
+
+    expect(state.event).toMatchObject({ type: "duplicate", oneAway: true });
+  });
+
   it("reveals every unsolved category without adding user guesses", () => {
     let state = createConnectionsGameState(puzzle);
     state = { ...state, mistakesRemaining: null };
