@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import {
   defaultSettings,
@@ -7,23 +7,11 @@ import {
   saveSettings,
   setLinkSourceEnabled,
   STORAGE_KEY,
-} from "#src/settings";
-
-const storage = new Map<string, string>();
-
-vi.stubGlobal("window", {
-  localStorage: {
-    clear: () => storage.clear(),
-    getItem: (key: string) => storage.get(key) ?? null,
-    setItem: (key: string, value: string) => storage.set(key, value),
-    removeItem: (key: string) => storage.delete(key),
-  },
-});
+} from "@/features/settings/settings-store";
 
 describe("settings", () => {
   beforeEach(() => {
     window.localStorage.clear();
-    vi.restoreAllMocks();
   });
 
   it("loads defaults when localStorage is empty", () => {
@@ -41,7 +29,7 @@ describe("settings", () => {
     let settings = setLinkSourceEnabled(
       defaultSettings(),
       "translate-ru",
-      false,
+      false
     );
     settings = setLinkSourceEnabled(settings, "dictionary-cambridge", true);
 
@@ -92,7 +80,7 @@ describe("settings", () => {
           "translate-ru": false,
           "translate-uk": false,
         },
-      }),
+      })
     );
 
     expect(enabledSourceCount(loadSettings())).toBe(1);

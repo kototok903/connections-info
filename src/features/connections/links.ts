@@ -85,9 +85,7 @@ export const DEFAULT_LINK_SOURCE_IDS: LinkSourceId[] = [
 
 export function linksForWord(
   word: string,
-  enabledSourceIds: ReadonlySet<LinkSourceId> = new Set(
-    DEFAULT_LINK_SOURCE_IDS,
-  ),
+  enabledSourceIds: ReadonlySet<LinkSourceId> = new Set(DEFAULT_LINK_SOURCE_IDS)
 ): WordLink[] {
   const lower = word.toLowerCase();
   return Array.from(enabledSourceIds, (sourceId) => {
@@ -108,19 +106,19 @@ function googleSearchUrl(query: string): string {
 
 function merriamWebsterUrl(word: string): string {
   return `https://www.merriam-webster.com/dictionary/${encodeURIComponent(
-    normalizedTerm(word),
+    normalizedTerm(word)
   )}`;
 }
 
 function cambridgeUrl(word: string): string {
   return `https://dictionary.cambridge.org/us/dictionary/english/${encodeURIComponent(
-    normalizedTerm(word),
+    normalizedTerm(word)
   )}`;
 }
 
 function dictionaryComUrl(word: string): string {
   return `https://www.dictionary.com/browse/${encodeURIComponent(
-    normalizedTerm(word),
+    normalizedTerm(word)
   )}`;
 }
 
@@ -132,7 +130,7 @@ function urbanDictionaryUrl(word: string): string {
 
 function thesaurusUrl(word: string): string {
   return `https://www.thesaurus.com/browse/${encodeURIComponent(
-    normalizedTerm(word),
+    normalizedTerm(word)
   )}`;
 }
 

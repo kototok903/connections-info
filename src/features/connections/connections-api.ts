@@ -3,11 +3,12 @@ import { isRecord } from "#shared/utils.js";
 
 export async function loadConnectionsPuzzle(
   date: string,
+  signal?: AbortSignal
 ): Promise<ConnectionsPuzzle> {
   const url = new URL("/api/connections", window.location.origin);
   url.searchParams.set("date", date);
 
-  const response = await fetch(url);
+  const response = await fetch(url, { signal });
   const data = await readJsonResponse(response);
 
   if (!response.ok) {

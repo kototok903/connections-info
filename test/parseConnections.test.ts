@@ -47,7 +47,7 @@ describe("parseNytConnections", () => {
           },
         ],
       },
-      "2026-07-06",
+      "2026-07-06"
     );
 
     expect(result).toEqual({
@@ -75,7 +75,7 @@ describe("parseNytConnections", () => {
 
   it("rejects incomplete puzzles", () => {
     expect(() =>
-      parseNytConnections({ categories: [{ cards: [] }] }, "2026-07-07"),
+      parseNytConnections({ categories: [{ cards: [] }] }, "2026-07-07")
     ).toThrow("Expected 16 puzzle words");
   });
 });

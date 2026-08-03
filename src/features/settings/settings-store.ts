@@ -1,6 +1,6 @@
+import { DEFAULT_LINK_SOURCE_IDS } from "@/features/connections/links";
 import { LINK_SOURCE_IDS, type LinkSourceId } from "#shared/types.js";
 import { isRecord } from "#shared/utils.js";
-import { DEFAULT_LINK_SOURCE_IDS } from "#src/links";
 
 export const STORAGE_KEY = "connections-info:settings:v1";
 
@@ -16,14 +16,14 @@ export function defaultSettings(): AppSettings {
       LINK_SOURCE_IDS.map((sourceId) => [
         sourceId,
         defaultEnabledIds.has(sourceId),
-      ]),
+      ])
     ) as Record<LinkSourceId, boolean>,
   };
 }
 
 export function enabledSourceIds(settings: AppSettings): Set<LinkSourceId> {
   return new Set(
-    LINK_SOURCE_IDS.filter((sourceId) => settings.linkSources[sourceId]),
+    LINK_SOURCE_IDS.filter((sourceId) => settings.linkSources[sourceId])
   );
 }
 
@@ -54,7 +54,7 @@ export function saveSettings(settings: AppSettings): void {
 export function setLinkSourceEnabled(
   settings: AppSettings,
   sourceId: LinkSourceId,
-  isEnabled: boolean,
+  isEnabled: boolean
 ): AppSettings {
   if (!settings.linkSources[sourceId]) {
     isEnabled = true;
@@ -87,7 +87,7 @@ function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
         typeof storedLinkSources[sourceId] === "boolean"
           ? storedLinkSources[sourceId]
           : fallback.linkSources[sourceId],
-      ]),
+      ])
     ) as Record<LinkSourceId, boolean>,
   };
 }

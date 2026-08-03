@@ -16,11 +16,24 @@ export function todayInNewYork(now = new Date()): string {
 }
 
 export function todayInLocalTimezone(now = new Date()): string {
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
+  return isoDateFromDate(now);
+}
+
+export function isoDateFromDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+}
+
+export function dateFromIsoDate(date: string): Date | null {
+  if (validatePuzzleDate(date)) {
+    return null;
+  }
+
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(year, month - 1, day);
 }
 
 export function validatePuzzleDate(date: string): string | null {
@@ -47,7 +60,7 @@ export function validatePuzzleDate(date: string): string | null {
 
 function partValue(
   parts: Intl.DateTimeFormatPart[],
-  type: Intl.DateTimeFormatPartTypes,
+  type: Intl.DateTimeFormatPartTypes
 ): string {
   const part = parts.find((item) => item.type === type);
   if (!part) {

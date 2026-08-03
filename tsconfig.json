@@ -1,26 +1,15 @@
 {
+  "files": [],
   "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "baseUrl": ".",
     "paths": {
-      "#api/*": ["api/*"],
-      "#shared/*": ["shared/*"],
-      "#src/*": ["src/*"]
-    },
-    "types": ["node", "vitest/globals"]
+      "@/*": ["./src/*"],
+      "#api/*": ["./api/*"],
+      "#shared/*": ["./shared/*"]
+    }
   },
-  "include": ["api", "shared", "src", "test", "vite.config.ts"]
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.test.json" }
+  ]
 }

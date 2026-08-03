@@ -30,7 +30,7 @@ export async function GET(request: Request): Promise<Response> {
       {
         status: 400,
         cache: "no-store",
-      },
+      }
     );
   }
 
@@ -51,13 +51,13 @@ export async function GET(request: Request): Promise<Response> {
       {
         status,
         cache: "no-store",
-      },
+      }
     );
   }
 }
 
 export async function fetchConnectionsPuzzle(
-  date: string,
+  date: string
 ): Promise<ConnectionsPuzzle> {
   const response = await fetch(`${NYT_ENDPOINT}/${date}.json`, {
     headers: {
@@ -80,7 +80,7 @@ export async function fetchConnectionsPuzzle(
 
 export function parseNytConnections(
   data: unknown,
-  fallbackDate: string,
+  fallbackDate: string
 ): ConnectionsPuzzle {
   if (!isRecord(data)) {
     throw new Error("NYT response was not an object.");
@@ -118,7 +118,7 @@ export function parseNytConnections(
         };
       })
       .filter(
-        (card): card is { word: string; position: number } => card !== null,
+        (card): card is { word: string; position: number } => card !== null
       );
   });
 
@@ -143,7 +143,7 @@ function jsonResponse(
   options: {
     status: number;
     cache: string;
-  },
+  }
 ): Response {
   return Response.json(body, {
     status: options.status,

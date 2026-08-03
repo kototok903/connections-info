@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  dateFromIsoDate,
+  isoDateFromDate,
   todayInLocalTimezone,
   todayInNewYork,
   validatePuzzleDate,
@@ -15,14 +17,22 @@ describe("date helpers", () => {
   it("validates ISO calendar dates", () => {
     expect(validatePuzzleDate("2026-07-07")).toBeNull();
     expect(validatePuzzleDate("2026-2-3")).toBe(
-      "Date must use YYYY-MM-DD format.",
+      "Date must use YYYY-MM-DD format."
     );
     expect(validatePuzzleDate("2026-02-31")).toBe("Date is invalid.");
   });
 
   it("formats today using the runtime local timezone", () => {
     expect(todayInLocalTimezone(new Date(2026, 6, 7, 23, 30))).toBe(
-      "2026-07-07",
+      "2026-07-07"
     );
+  });
+
+  it("converts ISO puzzle dates without timezone shifts", () => {
+    const date = dateFromIsoDate("2026-07-07");
+
+    expect(date).not.toBeNull();
+    expect(isoDateFromDate(date!)).toBe("2026-07-07");
+    expect(dateFromIsoDate("not-a-date")).toBeNull();
   });
 });

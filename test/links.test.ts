@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { linksForWord } from "#src/links";
+import { linksForWord } from "@/features/connections/links";
 
 describe("linksForWord", () => {
   it("builds research links for a word", () => {
@@ -15,13 +15,13 @@ describe("linksForWord", () => {
       "UK",
     ]);
     expect(links[0].href).toBe(
-      "https://www.google.com/search?q=tinderbox+meaning",
+      "https://www.google.com/search?q=tinderbox+meaning"
     );
     expect(links[1].href).toBe(
-      "https://www.merriam-webster.com/dictionary/tinderbox",
+      "https://www.merriam-webster.com/dictionary/tinderbox"
     );
     expect(links[2].href).toBe(
-      "https://www.urbandictionary.com/define.php?term=tinderbox",
+      "https://www.urbandictionary.com/define.php?term=tinderbox"
     );
     expect(links[3].href).toBe("https://www.thesaurus.com/browse/tinderbox");
     expect(links[4].href).toContain("tl=ru");
@@ -45,7 +45,7 @@ describe("linksForWord", () => {
     const thesaurus = linksForWord("ice cream")[3];
 
     expect(dictionary.href).toBe(
-      "https://www.merriam-webster.com/dictionary/ice-cream",
+      "https://www.merriam-webster.com/dictionary/ice-cream"
     );
     expect(thesaurus.href).toBe("https://www.thesaurus.com/browse/ice-cream");
   });

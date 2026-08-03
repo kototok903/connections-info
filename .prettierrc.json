@@ -3,5 +3,9 @@
   "tabWidth": 2,
   "useTabs": false,
   "semi": true,
-  "singleQuote": false
+  "singleQuote": false,
+  "trailingComma": "es5",
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "src/index.css",
+  "tailwindFunctions": ["cn", "cva"]
 }
