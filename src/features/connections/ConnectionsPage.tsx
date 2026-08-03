@@ -16,10 +16,6 @@ export function ConnectionsPage() {
   const { settings, updateSource } = useSettings();
 
   useEffect(() => {
-    syncUrlDate(date, "replace");
-  }, [date]);
-
-  useEffect(() => {
     function handlePopState() {
       setDate(getDateFromUrl() ?? todayInLocalTimezone());
     }

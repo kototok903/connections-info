@@ -8,6 +8,7 @@ import {
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import App from "@/App";
+import { todayInLocalTimezone } from "#shared/date.js";
 
 const words = [
   "ALPHA",
@@ -50,6 +51,36 @@ describe("Connections app", () => {
       }),
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     );
+  });
+
+  it("uses the local date without adding it to an empty URL", async () => {
+    window.history.replaceState(null, "", "/");
+
+    render(<App />);
+
+    expect(await screen.findByText("ALPHA")).toBeInTheDocument();
+    expect(window.location.search).toBe("");
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: `?date=${todayInLocalTimezone()}&schema=2`,
+      }),
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    );
+  });
+
+  it("adds an explicit date after navigating back to today", async () => {
+    window.history.replaceState(null, "", "/");
+    const today = todayInLocalTimezone();
+
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    fireEvent.click(screen.getByRole("button", { name: "Previous day" }));
+    fireEvent.click(screen.getByRole("button", { name: "Next day" }));
+
+    await waitFor(() => {
+      expect(window.location.search).toBe(`?date=${today}`);
+    });
   });
 
   it("loads a calendar date immediately", async () => {
