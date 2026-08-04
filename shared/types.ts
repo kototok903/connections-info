@@ -20,6 +20,18 @@ export type ConnectionsPuzzle = {
   id: number | null;
 };
 
+export type ConnectionsHint = {
+  color: ConnectionColor;
+  text: string;
+};
+
+export type ConnectionsHints = {
+  companionUrl: string;
+  date: string;
+  hints: ConnectionsHint[];
+  mashableUrl: string;
+};
+
 export const LINK_SOURCE_IDS = [
   "google",
   "google-meaning",

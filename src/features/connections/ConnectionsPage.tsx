@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { ConnectionsGame } from "@/features/connections/ConnectionsGame";
 import { DateNavigation } from "@/features/connections/DateNavigation";
+import { HintsDialog } from "@/features/connections/HintsDialog";
 import { useConnectionsPuzzle } from "@/features/connections/useConnectionsPuzzle";
 import { enabledSourceIds } from "@/features/settings/settings-store";
 import { SettingsDialog } from "@/features/settings/SettingsDialog";
@@ -42,12 +43,15 @@ export function ConnectionsPage() {
         <h1 className="font-serif text-2xl leading-none font-bold sm:text-3xl">
           Connections Info
         </h1>
-        <SettingsDialog
-          settings={settings}
-          onShowPastGuessesChange={updateShowPastGuesses}
-          onShowResearchSourcesChange={updateShowResearchSources}
-          onSourceChange={updateSource}
-        />
+        <div className="flex items-center gap-2">
+          <HintsDialog date={date} />
+          <SettingsDialog
+            settings={settings}
+            onShowPastGuessesChange={updateShowPastGuesses}
+            onShowResearchSourcesChange={updateShowResearchSources}
+            onSourceChange={updateSource}
+          />
+        </div>
       </header>
 
       <Separator className="my-4" />
