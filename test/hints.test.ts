@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  assertMashableArticleMatches,
   connectionsCompanionUrl,
   mashableHintsUrl,
   parseMashableHints,
@@ -52,5 +53,27 @@ describe("Connections hint sources", () => {
         <ul><li>Yellow: A partial hint</li></ul>
       `)
     ).toThrow("all four Connections hints");
+  });
+
+  it("rejects a fallback article returned for a future date", () => {
+    expect(() =>
+      assertMashableArticleMatches(
+        "2026-08-05",
+        "https://mashable.com/entertainment/nyt-connections-hint-answer-today-august-5-2026",
+        "https://mashable.com/entertainment/nyt-connections-hint-answer-today-august-4-2026",
+        `<link rel="canonical" href="https://mashable.com/entertainment/nyt-connections-hint-answer-today-august-4-2026">`
+      )
+    ).toThrow("Hints not found for 2026-08-05.");
+  });
+
+  it("rejects mismatched canonical metadata even without a redirect URL", () => {
+    expect(() =>
+      assertMashableArticleMatches(
+        "2026-08-05",
+        "https://mashable.com/entertainment/nyt-connections-hint-answer-today-august-5-2026",
+        "",
+        `<link rel="canonical" href="https://mashable.com/entertainment/nyt-connections-hint-answer-today-august-4-2026">`
+      )
+    ).toThrow("Hints not found for 2026-08-05.");
   });
 });

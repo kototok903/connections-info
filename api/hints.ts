@@ -29,11 +29,12 @@ export async function GET(request: Request): Promise<Response> {
     const result = await fetchConnectionsHints(date);
     return jsonResponse(result, 200, cacheHeaderFor(date));
   } catch (error) {
+    const isNotFound = error instanceof HintsNotFoundError;
     return jsonResponse(
       {
         error: error instanceof Error ? error.message : "Failed to load hints.",
       },
-      502,
+      isNotFound ? 404 : 502,
       "no-store"
     );
   }
@@ -55,7 +56,9 @@ export async function fetchConnectionsHints(
     throw new Error(`Mashable returned ${response.status} for ${date}.`);
   }
 
-  const hints = parseMashableHints(await response.text());
+  const html = await response.text();
+  assertMashableArticleMatches(date, mashableUrl, response.url, html);
+  const hints = parseMashableHints(html);
 
   return {
     companionUrl: connectionsCompanionUrl(date),
@@ -63,6 +66,23 @@ export async function fetchConnectionsHints(
     hints,
     mashableUrl,
   };
+}
+
+export function assertMashableArticleMatches(
+  date: string,
+  requestedUrl: string,
+  responseUrl: string,
+  html: string
+): void {
+  if (responseUrl && !isSameArticleUrl(requestedUrl, responseUrl)) {
+    throw new HintsNotFoundError(date);
+  }
+
+  const $ = load(html);
+  const canonicalUrl = $('link[rel="canonical"]').attr("href");
+  if (canonicalUrl && !isSameArticleUrl(requestedUrl, canonicalUrl)) {
+    throw new HintsNotFoundError(date);
+  }
 }
 
 export function parseMashableHints(html: string): ConnectionsHint[] {
@@ -145,6 +165,32 @@ function normalizeText(value: string): string {
 
 function normalizeWhitespace(value: string): string {
   return value.replaceAll(/\s+/g, " ").trim();
+}
+
+function isSameArticleUrl(expected: string, actual: string): boolean {
+  try {
+    const expectedUrl = new URL(expected);
+    const actualUrl = new URL(actual);
+    return (
+      expectedUrl.hostname.replace(/^www\./, "") ===
+        actualUrl.hostname.replace(/^www\./, "") &&
+      normalizedPathname(expectedUrl.pathname) ===
+        normalizedPathname(actualUrl.pathname)
+    );
+  } catch {
+    return false;
+  }
+}
+
+function normalizedPathname(pathname: string): string {
+  return pathname.replace(/\/$/, "").toLowerCase();
+}
+
+class HintsNotFoundError extends Error {
+  constructor(date: string) {
+    super(`Hints not found for ${date}.`);
+    this.name = "HintsNotFoundError";
+  }
 }
 
 function jsonResponse(body: unknown, status: number, cache: string): Response {
