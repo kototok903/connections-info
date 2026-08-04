@@ -5,7 +5,6 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -23,6 +22,7 @@ import {
   type AppSettings,
   enabledSourceCount,
 } from "@/features/settings/settings-store";
+import { cn } from "@/lib/utils";
 import type { LinkSourceId } from "#shared/types.js";
 
 type SettingsDialogProps = {
@@ -47,12 +47,12 @@ export function SettingsDialog({
       >
         <SettingsIcon />
       </DialogTrigger>
-      <DialogContent className="max-h-[calc(100svh-2rem)] sm:max-w-md">
+      <DialogContent className="max-h-[calc(100svh-2rem)] grid-rows-[auto_minmax(0,1fr)] sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col gap-1">
+        <div className="-mx-2 flex min-h-0 flex-col gap-1 overflow-x-hidden overflow-y-auto px-2">
           <Field
             orientation="horizontal"
             className="rounded-lg p-2 hover:bg-muted"
@@ -84,7 +84,7 @@ export function SettingsDialog({
           <FieldSet
             disabled={!settings.showResearchSources}
             data-disabled={!settings.showResearchSources || undefined}
-            className="mt-3 overflow-y-auto"
+            className="mt-3"
           >
             <FieldLegend variant="label">Research sources</FieldLegend>
             <FieldGroup className="gap-1 overflow-x-hidden">
@@ -119,18 +119,18 @@ export function SettingsDialog({
               })}
             </FieldGroup>
           </FieldSet>
-        </div>
-
-        <DialogFooter>
           <a
             href="https://github.com/kototok903/connections-info"
             target="_blank"
             rel="noopener noreferrer"
-            className={buttonVariants({ size: "sm", variant: "link" })}
+            className={cn(
+              "mt-2 self-end",
+              buttonVariants({ size: "sm", variant: "link" })
+            )}
           >
             GitHub
           </a>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

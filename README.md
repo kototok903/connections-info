@@ -19,7 +19,7 @@ Wrapper for New York Times Connections with convenient research links per word.
 Install dependencies and start the Vite client:
 
 ```sh
-bun install
+bun i
 bun run dev
 ```
 
