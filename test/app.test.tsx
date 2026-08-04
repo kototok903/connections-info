@@ -53,6 +53,46 @@ describe("Connections app", () => {
     );
   });
 
+  it("opens the static How to Play dialog", async () => {
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    fireEvent.click(screen.getByRole("button", { name: "Open How to Play" }));
+
+    const dialog = await screen.findByRole("dialog", { name: "How to Play" });
+    expect(
+      within(dialog).getByText(
+        "Find groups of four items that share something in common."
+      )
+    ).toBeInTheDocument();
+    expect(within(dialog).getByText("Straightforward")).toBeInTheDocument();
+    expect(within(dialog).getByText("Tricky")).toBeInTheDocument();
+  });
+
+  it("opens each action from the small-screen menu", async () => {
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "How to Play" })
+    );
+    expect(
+      await screen.findByRole("dialog", { name: "How to Play" })
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Settings" }));
+    expect(
+      await screen.findByRole("dialog", { name: "Settings" })
+    ).toBeInTheDocument();
+  });
+
   it("uses the local date without adding it to an empty URL", async () => {
     window.history.replaceState(null, "", "/");
 

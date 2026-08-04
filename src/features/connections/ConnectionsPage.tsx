@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { ConnectionsGame } from "@/features/connections/ConnectionsGame";
 import { DateNavigation } from "@/features/connections/DateNavigation";
-import { HintsDialog } from "@/features/connections/HintsDialog";
+import { HeaderActions } from "@/features/connections/HeaderActions";
 import { useConnectionsPuzzle } from "@/features/connections/useConnectionsPuzzle";
 import { enabledSourceIds } from "@/features/settings/settings-store";
-import { SettingsDialog } from "@/features/settings/SettingsDialog";
 import { useSettings } from "@/features/settings/useSettings";
 import { todayInLocalTimezone, validatePuzzleDate } from "#shared/date.js";
 
@@ -43,15 +42,13 @@ export function ConnectionsPage() {
         <h1 className="font-serif text-2xl leading-none font-bold sm:text-3xl">
           Connections Info
         </h1>
-        <div className="flex items-center gap-2">
-          <HintsDialog date={date} />
-          <SettingsDialog
-            settings={settings}
-            onShowPastGuessesChange={updateShowPastGuesses}
-            onShowResearchSourcesChange={updateShowResearchSources}
-            onSourceChange={updateSource}
-          />
-        </div>
+        <HeaderActions
+          date={date}
+          settings={settings}
+          onShowPastGuessesChange={updateShowPastGuesses}
+          onShowResearchSourcesChange={updateShowResearchSources}
+          onSourceChange={updateSource}
+        />
       </header>
 
       <Separator className="my-4" />

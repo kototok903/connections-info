@@ -26,14 +26,20 @@ import { cn } from "@/lib/utils";
 import type { LinkSourceId } from "#shared/types.js";
 
 type SettingsDialogProps = {
+  onOpenChange?: (open: boolean) => void;
   settings: AppSettings;
+  open?: boolean;
+  triggerClassName?: string;
   onShowPastGuessesChange: (isEnabled: boolean) => void;
   onShowResearchSourcesChange: (isEnabled: boolean) => void;
   onSourceChange: (sourceId: LinkSourceId, isEnabled: boolean) => void;
 };
 
 export function SettingsDialog({
+  onOpenChange,
   settings,
+  open,
+  triggerClassName,
   onShowPastGuessesChange,
   onShowResearchSourcesChange,
   onSourceChange,
@@ -41,9 +47,16 @@ export function SettingsDialog({
   const enabledCount = enabledSourceCount(settings);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger
-        render={<Button type="button" size="icon" aria-label="Open settings" />}
+        render={
+          <Button
+            type="button"
+            size="icon"
+            aria-label="Open settings"
+            className={triggerClassName}
+          />
+        }
       >
         <SettingsIcon />
       </DialogTrigger>

@@ -18,6 +18,9 @@ import type { ConnectionsHints } from "#shared/types.js";
 
 type HintsDialogProps = {
   date: string;
+  onOpenChange?: (open: boolean) => void;
+  open?: boolean;
+  triggerClassName?: string;
 };
 
 type RequestState =
@@ -26,14 +29,25 @@ type RequestState =
   | { status: "success"; data: ConnectionsHints; error: null }
   | { status: "error"; data: null; error: string };
 
-export function HintsDialog({ date }: HintsDialogProps) {
-  const [open, setOpen] = useState(false);
+export function HintsDialog({
+  date,
+  onOpenChange,
+  open: controlledOpen,
+  triggerClassName,
+}: HintsDialogProps) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [request, setRequest] = useState<RequestState>({
     status: "idle",
     data: null,
     error: null,
   });
+  const open = controlledOpen ?? uncontrolledOpen;
+
+  function handleOpenChange(nextOpen: boolean) {
+    setUncontrolledOpen(nextOpen);
+    onOpenChange?.(nextOpen);
+  }
 
   useEffect(() => {
     if (!open) {
@@ -70,9 +84,16 @@ export function HintsDialog({ date }: HintsDialogProps) {
   }, [attempt, date, open]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger
-        render={<Button type="button" size="icon" aria-label="Open hints" />}
+        render={
+          <Button
+            type="button"
+            size="icon"
+            aria-label="Open hints"
+            className={triggerClassName}
+          />
+        }
       >
         <LightbulbIcon />
       </DialogTrigger>
