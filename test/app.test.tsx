@@ -254,6 +254,9 @@ describe("Connections app", () => {
     expect(within(screen.getByRole("dialog")).getAllByRole("img")).toHaveLength(
       16
     );
+    expect(
+      within(screen.getByRole("dialog")).getByRole("button", { name: "Share" })
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.getByRole("button", { name: "Replay" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Results" })).toBeInTheDocument();

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  connectionsPuzzleNumber,
   dateFromIsoDate,
   EARLIEST_CONNECTIONS_DATE,
   isoDateFromDate,
@@ -10,6 +11,12 @@ import {
 } from "#shared/date.js";
 
 describe("date helpers", () => {
+  it("calculates Connections puzzle numbers from their calendar date", () => {
+    expect(connectionsPuzzleNumber(EARLIEST_CONNECTIONS_DATE)).toBe(1);
+    expect(connectionsPuzzleNumber("2026-08-04")).toBe(1150);
+    expect(connectionsPuzzleNumber("not-a-date")).toBeNull();
+  });
+
   it("formats today using the New York timezone", () => {
     expect(todayInNewYork(new Date("2026-07-07T03:30:00Z"))).toBe("2026-07-06");
     expect(todayInNewYork(new Date("2026-07-07T05:00:00Z"))).toBe("2026-07-07");

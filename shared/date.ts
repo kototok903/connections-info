@@ -2,6 +2,22 @@ const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export const EARLIEST_CONNECTIONS_DATE = "2023-06-12";
 
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
+export function connectionsPuzzleNumber(date: string): number | null {
+  if (validatePuzzleDate(date)) {
+    return null;
+  }
+
+  return (
+    Math.floor(
+      (utcTimestampForIsoDate(date) -
+        utcTimestampForIsoDate(EARLIEST_CONNECTIONS_DATE)) /
+        MILLISECONDS_PER_DAY
+    ) + 1
+  );
+}
+
 export function todayInNewYork(now = new Date()): string {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/New_York",
@@ -83,4 +99,9 @@ export function formatDate(date: string) {
     day: "numeric",
     timeZone: "UTC",
   }).format(new Date(date));
+}
+
+function utcTimestampForIsoDate(date: string): number {
+  const [year, month, day] = date.split("-").map(Number);
+  return Date.UTC(year, month - 1, day);
 }

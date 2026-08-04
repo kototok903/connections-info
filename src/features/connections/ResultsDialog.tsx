@@ -1,6 +1,11 @@
+import { Share2Icon } from "lucide-react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -9,6 +14,10 @@ import {
   categoryForPosition,
   type GameGuess,
 } from "@/features/connections/game-state";
+import {
+  resultsShareText,
+  shareResultsText,
+} from "@/features/connections/results-share";
 import { cn } from "@/lib/utils";
 import type { ConnectionsPuzzle } from "#shared/types.js";
 
@@ -30,6 +39,18 @@ export function ResultsDialog({
       .flatMap((category) => category.words)
       .map((word) => [word.position, word.word] as const)
   );
+
+  async function shareResults() {
+    try {
+      const result = await shareResultsText(resultsShareText(puzzle, guesses));
+
+      if (result === "copied") {
+        toast.success("Results copied");
+      }
+    } catch {
+      toast.error("Could not share results");
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -62,6 +83,13 @@ export function ResultsDialog({
             </div>
           ))}
         </div>
+
+        <DialogFooter>
+          <Button className="self-end" onClick={shareResults}>
+            <Share2Icon data-icon="inline-start" />
+            Share
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
