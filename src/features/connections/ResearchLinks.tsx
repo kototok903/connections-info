@@ -21,9 +21,9 @@ export function ResearchLinks({ enabledSourceIds, word }: ResearchLinksProps) {
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          className="overflow-hidden"
+          className="-mt-4 overflow-hidden"
         >
-          <div className="flex flex-wrap justify-center gap-1.5 pt-1">
+          <div className="flex flex-wrap justify-center gap-1.5 pt-4">
             {linksForWord(word, enabledSourceIds).map((link) => (
               <a
                 key={link.sourceId}
