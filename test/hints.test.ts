@@ -55,6 +55,17 @@ describe("Connections hint sources", () => {
     ).toThrow("all four Connections hints");
   });
 
+  it("identifies the article using only its final URL slug", () => {
+    expect(() =>
+      assertMashableArticleMatches(
+        "2026-01-06",
+        "https://mashable.com/entertainment/nyt-connections-hint-answer-today-january-6-2026",
+        "https://redirect.example/anything/nyt-connections-hint-answer-today-january-6-2026/",
+        `<link rel="canonical" href="https://canonical.example/article/nyt-connections-hint-answer-today-january-6-2026">`
+      )
+    ).not.toThrow();
+  });
+
   it("rejects a fallback article returned for a future date", () => {
     expect(() =>
       assertMashableArticleMatches(

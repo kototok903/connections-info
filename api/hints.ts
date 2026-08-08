@@ -172,18 +172,16 @@ function isSameArticleUrl(expected: string, actual: string): boolean {
     const expectedUrl = new URL(expected);
     const actualUrl = new URL(actual);
     return (
-      expectedUrl.hostname.replace(/^www\./, "") ===
-        actualUrl.hostname.replace(/^www\./, "") &&
-      normalizedPathname(expectedUrl.pathname) ===
-        normalizedPathname(actualUrl.pathname)
+      finalPathSegment(expectedUrl.pathname) ===
+      finalPathSegment(actualUrl.pathname)
     );
   } catch {
     return false;
   }
 }
 
-function normalizedPathname(pathname: string): string {
-  return pathname.replace(/\/$/, "").toLowerCase();
+function finalPathSegment(pathname: string): string {
+  return pathname.replace(/\/$/, "").split("/").at(-1)?.toLowerCase() ?? "";
 }
 
 class HintsNotFoundError extends Error {
