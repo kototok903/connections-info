@@ -47,6 +47,7 @@ export function DatePicker({ date, onDateChange }: DatePickerProps) {
           mode="single"
           selected={selectedDate ?? undefined}
           defaultMonth={selectedDate ?? undefined}
+          captionLayout="dropdown"
           startMonth={earliestConnectionsDate ?? undefined}
           disabled={
             earliestConnectionsDate
