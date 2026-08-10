@@ -40,7 +40,7 @@ export function ConnectionsPage() {
     <main className="mx-auto w-[min(calc(100%-1.5rem),61.25rem)] py-5 sm:w-[min(calc(100%-2rem),61.25rem)] sm:py-7">
       <header className="flex items-center justify-between gap-4">
         <h1 className="font-serif text-2xl leading-none font-bold sm:text-3xl">
-          Connections Info
+          <a href="/">Connections Info</a>
         </h1>
         <HeaderActions
           date={date}

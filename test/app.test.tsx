@@ -53,6 +53,14 @@ describe("Connections app", () => {
     );
   });
 
+  it("links the header to the home path", () => {
+    render(<App />);
+
+    expect(
+      screen.getByRole("link", { name: "Connections Info" })
+    ).toHaveAttribute("href", "/");
+  });
+
   it("opens the static How to Play dialog", async () => {
     render(<App />);
     await screen.findByText("ALPHA");
