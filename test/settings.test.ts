@@ -10,6 +10,7 @@ import {
   setPastGuessesOrder,
   setShowPastGuesses,
   setShowResearchSources,
+  setTheme,
   STORAGE_KEY,
 } from "@/features/settings/settings-store";
 
@@ -57,6 +58,23 @@ describe("settings", () => {
     saveSettings(setPastGuessesOrder(defaultSettings(), "oldest-first"));
 
     expect(loadSettings().pastGuessesOrder).toBe("oldest-first");
+  });
+
+  it("defaults to the system theme and saves the choice", () => {
+    expect(defaultSettings().theme).toBe("system");
+
+    saveSettings(setTheme(defaultSettings(), "dark"));
+
+    expect(loadSettings().theme).toBe("dark");
+  });
+
+  it("falls back to the system theme for unknown stored values", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...defaultSettings(), theme: "sepia" })
+    );
+
+    expect(loadSettings().theme).toBe("system");
   });
 
   it("falls back to the default order for unknown stored values", () => {

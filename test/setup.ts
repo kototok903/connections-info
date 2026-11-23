@@ -37,4 +37,5 @@ Object.defineProperty(window, "scrollTo", {
 
 afterEach(() => {
   cleanup();
+  document.documentElement.classList.remove("dark");
 });

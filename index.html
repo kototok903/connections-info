@@ -10,6 +10,30 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#efefe6" />
     <title>Connections Info</title>
+    <script>
+      // Apply the saved theme before first paint to avoid a light flash.
+      // Mirrors src/features/settings/theme.ts.
+      (() => {
+        try {
+          const settings = JSON.parse(
+            localStorage.getItem("connections-info:settings:v1") ?? "{}"
+          );
+          const theme = settings?.theme;
+          const isDark =
+            theme === "dark" ||
+            (theme !== "light" &&
+              matchMedia("(prefers-color-scheme: dark)").matches);
+          if (isDark) {
+            document.documentElement.classList.add("dark");
+            document
+              .querySelector('meta[name="theme-color"]')
+              ?.setAttribute("content", "#1a1a1a");
+          }
+        } catch {
+          // Fall back to light.
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

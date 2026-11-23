@@ -19,6 +19,7 @@ import { HowToPlayDialog } from "@/features/connections/HowToPlayDialog";
 import type {
   AppSettings,
   PastGuessesOrder,
+  Theme,
 } from "@/features/settings/settings-store";
 import { SettingsDialog } from "@/features/settings/SettingsDialog";
 import type { LinkSourceId } from "#shared/types.js";
@@ -29,6 +30,7 @@ type HeaderActionsProps = {
   onShowPastGuessesChange: (isEnabled: boolean) => void;
   onShowResearchSourcesChange: (isEnabled: boolean) => void;
   onSourceChange: (sourceId: LinkSourceId, isEnabled: boolean) => void;
+  onThemeChange: (theme: Theme) => void;
   settings: AppSettings;
 };
 
@@ -38,6 +40,7 @@ export function HeaderActions({
   onShowPastGuessesChange,
   onShowResearchSourcesChange,
   onSourceChange,
+  onThemeChange,
   settings,
 }: HeaderActionsProps) {
   const [hintsOpen, setHintsOpen] = useState(false);
@@ -65,6 +68,7 @@ export function HeaderActions({
         onShowPastGuessesChange={onShowPastGuessesChange}
         onShowResearchSourcesChange={onShowResearchSourcesChange}
         onSourceChange={onSourceChange}
+        onThemeChange={onThemeChange}
         triggerClassName="hidden sm:inline-flex"
       />
 

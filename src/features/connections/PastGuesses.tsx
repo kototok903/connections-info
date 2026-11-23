@@ -72,7 +72,8 @@ export function PastGuesses({
               <span
                 className={cn(
                   "font-semibold",
-                  outcome.color && "[text-shadow:0.5px_0.5px_0_#000]",
+                  outcome.color &&
+                    "[text-shadow:0.5px_0.5px_0_#000] dark:[text-shadow:none]",
                   outcome.color && CATEGORY_TEXT_CLASSES[outcome.color]
                 )}
               >

@@ -286,6 +286,25 @@ describe("Connections app", () => {
     ).toContain('"showPastGuesses":false');
   });
 
+  it("switches the theme from settings", async () => {
+    render(<App />);
+    await screen.findByText("ALPHA");
+    expect(document.documentElement).not.toHaveClass("dark");
+
+    fireEvent.click(screen.getByRole("button", { name: "Open settings" }));
+    const system = await screen.findByRole("radio", { name: "System" });
+    expect(system).toBeChecked();
+
+    fireEvent.click(screen.getByRole("radio", { name: "Dark" }));
+    expect(document.documentElement).toHaveClass("dark");
+    expect(
+      window.localStorage.getItem("connections-info:settings:v1")
+    ).toContain('"theme":"dark"');
+
+    fireEvent.click(screen.getByRole("radio", { name: "Light" }));
+    expect(document.documentElement).not.toHaveClass("dark");
+  });
+
   it("changes the past guesses order from settings", async () => {
     render(<App />);
     await screen.findByText("ALPHA");

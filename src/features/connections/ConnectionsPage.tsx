@@ -6,6 +6,7 @@ import { DateNavigation } from "@/features/connections/DateNavigation";
 import { HeaderActions } from "@/features/connections/HeaderActions";
 import { useConnectionsPuzzle } from "@/features/connections/useConnectionsPuzzle";
 import { enabledSourceIds } from "@/features/settings/settings-store";
+import { useApplyTheme } from "@/features/settings/theme";
 import { useSettings } from "@/features/settings/useSettings";
 import { todayInLocalTimezone, validatePuzzleDate } from "#shared/date.js";
 
@@ -19,7 +20,9 @@ export function ConnectionsPage() {
     updateShowPastGuesses,
     updateShowResearchSources,
     updateSource,
+    updateTheme,
   } = useSettings();
+  useApplyTheme(settings.theme);
 
   useEffect(() => {
     function handlePopState() {
@@ -50,6 +53,7 @@ export function ConnectionsPage() {
           onShowPastGuessesChange={updateShowPastGuesses}
           onShowResearchSourcesChange={updateShowResearchSources}
           onSourceChange={updateSource}
+          onThemeChange={updateTheme}
         />
       </header>
 

@@ -9,6 +9,8 @@ import {
   setPastGuessesOrder,
   setShowPastGuesses,
   setShowResearchSources,
+  setTheme,
+  type Theme,
 } from "@/features/settings/settings-store";
 import type { LinkSourceId } from "#shared/types.js";
 
@@ -18,6 +20,7 @@ type UseSettingsResult = {
   updateShowPastGuesses: (isEnabled: boolean) => void;
   updateShowResearchSources: (isEnabled: boolean) => void;
   updateSource: (sourceId: LinkSourceId, isEnabled: boolean) => void;
+  updateTheme: (theme: Theme) => void;
 };
 
 export function useSettings(): UseSettingsResult {
@@ -58,11 +61,20 @@ export function useSettings(): UseSettingsResult {
     });
   }, []);
 
+  const updateTheme = useCallback((theme: Theme) => {
+    setSettings((current) => {
+      const next = setTheme(current, theme);
+      saveSettings(next);
+      return next;
+    });
+  }, []);
+
   return {
     settings,
     updatePastGuessesOrder,
     updateShowPastGuesses,
     updateShowResearchSources,
     updateSource,
+    updateTheme,
   };
 }

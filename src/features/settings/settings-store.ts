@@ -8,7 +8,12 @@ export const PAST_GUESSES_ORDERS = ["newest-first", "oldest-first"] as const;
 
 export type PastGuessesOrder = (typeof PAST_GUESSES_ORDERS)[number];
 
+export const THEMES = ["system", "light", "dark"] as const;
+
+export type Theme = (typeof THEMES)[number];
+
 export type AppSettings = {
+  theme: Theme;
   showPastGuesses: boolean;
   pastGuessesOrder: PastGuessesOrder;
   showResearchSources: boolean;
@@ -19,6 +24,7 @@ export function defaultSettings(): AppSettings {
   const defaultEnabledIds = new Set(DEFAULT_LINK_SOURCE_IDS);
 
   return {
+    theme: "system",
     showPastGuesses: true,
     pastGuessesOrder: "newest-first",
     showResearchSources: true,
@@ -102,6 +108,10 @@ export function setShowPastGuesses(
   return { ...settings, showPastGuesses };
 }
 
+export function setTheme(settings: AppSettings, theme: Theme): AppSettings {
+  return { ...settings, theme };
+}
+
 export function setPastGuessesOrder(
   settings: AppSettings,
   pastGuessesOrder: PastGuessesOrder
@@ -117,6 +127,7 @@ function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
   const storedLinkSources = value.linkSources;
 
   return {
+    theme: isTheme(value.theme) ? value.theme : fallback.theme,
     showPastGuesses:
       typeof value.showPastGuesses === "boolean"
         ? value.showPastGuesses
@@ -137,6 +148,10 @@ function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
       ])
     ) as Record<LinkSourceId, boolean>,
   };
+}
+
+function isTheme(value: unknown): value is Theme {
+  return THEMES.includes(value as Theme);
 }
 
 function isPastGuessesOrder(value: unknown): value is PastGuessesOrder {

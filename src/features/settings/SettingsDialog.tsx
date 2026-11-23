@@ -1,4 +1,10 @@
-import { SettingsIcon } from "lucide-react";
+import {
+  type LucideIcon,
+  MonitorIcon,
+  MoonIcon,
+  SettingsIcon,
+  SunIcon,
+} from "lucide-react";
 
 import { Favicon } from "@/components/Favicon";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -22,6 +28,7 @@ import {
   type AppSettings,
   enabledSourceCount,
   type PastGuessesOrder,
+  type Theme,
 } from "@/features/settings/settings-store";
 import { cn } from "@/lib/utils";
 import type { LinkSourceId } from "#shared/types.js";
@@ -35,7 +42,18 @@ type SettingsDialogProps = {
   onShowPastGuessesChange: (isEnabled: boolean) => void;
   onShowResearchSourcesChange: (isEnabled: boolean) => void;
   onSourceChange: (sourceId: LinkSourceId, isEnabled: boolean) => void;
+  onThemeChange: (theme: Theme) => void;
 };
+
+const THEME_OPTIONS = [
+  { value: "system", label: "System", Icon: MonitorIcon },
+  { value: "light", label: "Light", Icon: SunIcon },
+  { value: "dark", label: "Dark", Icon: MoonIcon },
+] as const satisfies readonly {
+  value: Theme;
+  label: string;
+  Icon: LucideIcon;
+}[];
 
 export function SettingsDialog({
   onOpenChange,
@@ -46,6 +64,7 @@ export function SettingsDialog({
   onShowPastGuessesChange,
   onShowResearchSourcesChange,
   onSourceChange,
+  onThemeChange,
 }: SettingsDialogProps) {
   const enabledCount = enabledSourceCount(settings);
 
@@ -69,6 +88,36 @@ export function SettingsDialog({
         </DialogHeader>
 
         <div className="-mx-2 flex min-h-0 flex-col gap-1 overflow-x-hidden overflow-y-auto px-2">
+          <div className="flex items-center justify-between gap-2 p-2">
+            <span id="theme-label" className="text-sm leading-snug font-medium">
+              Theme
+            </span>
+            <div
+              role="radiogroup"
+              aria-labelledby="theme-label"
+              className="flex gap-0.5 rounded-lg bg-muted p-0.5"
+            >
+              {THEME_OPTIONS.map(({ value, label, Icon }) => {
+                const checked = settings.theme === value;
+                return (
+                  <Button
+                    key={value}
+                    type="button"
+                    role="radio"
+                    aria-checked={checked}
+                    size="sm"
+                    variant={checked ? "default" : "ghost"}
+                    className={cn(!checked && "hover:bg-background")}
+                    onClick={() => onThemeChange(value)}
+                  >
+                    <Icon data-icon="inline-start" />
+                    {label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
           <Field
             orientation="horizontal"
             className="rounded-lg p-2 hover:bg-muted"
