@@ -54,12 +54,12 @@ export function ResultsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm">
+      <DialogContent className="max-h-[calc(100svh-2rem)] grid-rows-[auto_minmax(0,1fr)_auto] sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>Results</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col items-center gap-2 py-3">
+        <div className="-mb-4 flex min-h-0 flex-col items-center gap-2 overflow-y-auto py-3 pb-4">
           {guesses.map((guess, guessIndex) => (
             <div key={guessIndex} className="grid grid-cols-4 gap-2">
               {guess.positions.map((position) => {
