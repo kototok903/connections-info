@@ -55,4 +55,41 @@ describe("linksForWord", () => {
     );
     expect(thesaurus.href).toBe("https://www.thesaurus.com/browse/ice-cream");
   });
+
+  it("builds search engine links, including AI-free variants", () => {
+    const links = linksForWord(
+      "Tinder Box",
+      new Set([
+        "google-no-ai",
+        "duckduckgo",
+        "duckduckgo-no-ai",
+        "duckduckgo-meaning",
+      ])
+    );
+
+    expect(links.map((link) => link.href)).toEqual([
+      "https://www.google.com/search?q=tinder+box&udm=14",
+      "https://duckduckgo.com/?q=tinder+box",
+      "https://noai.duckduckgo.com/?q=tinder+box",
+      "https://duckduckgo.com/?q=tinder+box+meaning",
+    ]);
+  });
+
+  it("builds reference links", () => {
+    const links = linksForWord(
+      "Tinder Box",
+      new Set(["wikipedia", "wiktionary", "rhymezone"])
+    );
+
+    expect(links.map((link) => link.label)).toEqual([
+      "Wikipedia",
+      "Wiktionary",
+      "Rhymes",
+    ]);
+    expect(links.map((link) => link.href)).toEqual([
+      "https://en.wikipedia.org/wiki/Special:Search?search=tinder+box",
+      "https://en.wiktionary.org/wiki/Special:Search?search=tinder+box",
+      "https://www.rhymezone.com/r/rhyme.cgi?Word=tinder+box&typeofrhyme=perfect",
+    ]);
+  });
 });

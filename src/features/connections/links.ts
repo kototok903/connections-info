@@ -16,12 +16,40 @@ export const LINK_SOURCES: Record<LinkSourceId, LinkSource> = {
     sampleHref: "https://www.google.com/search",
     hrefForWord: googleSearchUrl,
   },
+  "google-no-ai": {
+    id: "google-no-ai",
+    label: "Google",
+    settingsLabel: "Google (no AI)",
+    sampleHref: "https://www.google.com/search",
+    hrefForWord: (word) => googleSearchUrl(word, { noAi: true }),
+  },
   "google-meaning": {
     id: "google-meaning",
     label: "Meaning",
     settingsLabel: 'Google "_ meaning"',
     sampleHref: "https://www.google.com/search",
     hrefForWord: (word) => googleSearchUrl(`${word} meaning`),
+  },
+  duckduckgo: {
+    id: "duckduckgo",
+    label: "DuckDuckGo",
+    settingsLabel: "DuckDuckGo",
+    sampleHref: "https://duckduckgo.com/",
+    hrefForWord: duckDuckGoUrl,
+  },
+  "duckduckgo-no-ai": {
+    id: "duckduckgo-no-ai",
+    label: "DuckDuckGo",
+    settingsLabel: "DuckDuckGo (no AI)",
+    sampleHref: "https://duckduckgo.com/",
+    hrefForWord: (word) => duckDuckGoUrl(word, { noAi: true }),
+  },
+  "duckduckgo-meaning": {
+    id: "duckduckgo-meaning",
+    label: "Meaning",
+    settingsLabel: 'DuckDuckGo "_ meaning"',
+    sampleHref: "https://duckduckgo.com/",
+    hrefForWord: (word) => duckDuckGoUrl(`${word} meaning`),
   },
   "dictionary-mw": {
     id: "dictionary-mw",
@@ -57,6 +85,27 @@ export const LINK_SOURCES: Record<LinkSourceId, LinkSource> = {
     settingsLabel: "Thesaurus.com",
     sampleHref: "https://www.thesaurus.com/",
     hrefForWord: thesaurusUrl,
+  },
+  wikipedia: {
+    id: "wikipedia",
+    label: "Wikipedia",
+    settingsLabel: "Wikipedia",
+    sampleHref: "https://en.wikipedia.org/",
+    hrefForWord: (word) => wikiSearchUrl("en.wikipedia.org", word),
+  },
+  wiktionary: {
+    id: "wiktionary",
+    label: "Wiktionary",
+    settingsLabel: "Wiktionary",
+    sampleHref: "https://en.wiktionary.org/",
+    hrefForWord: (word) => wikiSearchUrl("en.wiktionary.org", word),
+  },
+  rhymezone: {
+    id: "rhymezone",
+    label: "Rhymes",
+    settingsLabel: "RhymeZone",
+    sampleHref: "https://www.rhymezone.com/",
+    hrefForWord: rhymeZoneUrl,
   },
   "translate-ru": {
     id: "translate-ru",
@@ -96,8 +145,21 @@ export function linksForWord(
   });
 }
 
-function googleSearchUrl(query: string): string {
+function googleSearchUrl(query: string, { noAi = false } = {}): string {
   const url = new URL("https://www.google.com/search");
+  url.searchParams.set("q", query);
+  if (noAi) {
+    // "Web" results tab, which skips AI Overviews.
+    url.searchParams.set("udm", "14");
+  }
+  return url.toString();
+}
+
+function duckDuckGoUrl(query: string, { noAi = false } = {}): string {
+  // noai.duckduckgo.com is DuckDuckGo's official AI-free search endpoint.
+  const url = new URL(
+    noAi ? "https://noai.duckduckgo.com/" : "https://duckduckgo.com/"
+  );
   url.searchParams.set("q", query);
   return url.toString();
 }
@@ -130,6 +192,21 @@ function thesaurusUrl(word: string): string {
   return `https://www.thesaurus.com/browse/${encodeURIComponent(
     normalizedTerm(word)
   )}`;
+}
+
+// Special:Search jumps straight to the page on an exact title match and
+// falls back to search results otherwise (e.g. for multi-word items).
+function wikiSearchUrl(host: string, query: string): string {
+  const url = new URL(`https://${host}/wiki/Special:Search`);
+  url.searchParams.set("search", query);
+  return url.toString();
+}
+
+function rhymeZoneUrl(word: string): string {
+  const url = new URL("https://www.rhymezone.com/r/rhyme.cgi");
+  url.searchParams.set("Word", word);
+  url.searchParams.set("typeofrhyme", "perfect");
+  return url.toString();
 }
 
 function googleTranslateUrl(word: string, targetLanguage: "ru" | "uk"): string {

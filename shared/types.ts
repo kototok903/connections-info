@@ -34,12 +34,19 @@ export type ConnectionsHints = {
 
 export const LINK_SOURCE_IDS = [
   "google",
+  "google-no-ai",
   "google-meaning",
+  "duckduckgo",
+  "duckduckgo-no-ai",
+  "duckduckgo-meaning",
   "dictionary-mw",
   "dictionary-cambridge",
   "dictionary-dictcom",
   "dictionary-urban",
   "thesaurus",
+  "wikipedia",
+  "wiktionary",
+  "rhymezone",
   "translate-ru",
   "translate-uk",
 ] as const;
