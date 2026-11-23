@@ -4,8 +4,13 @@ import { isRecord } from "#shared/utils.js";
 
 export const STORAGE_KEY = "connections-info:settings:v1";
 
+export const PAST_GUESSES_ORDERS = ["newest-first", "oldest-first"] as const;
+
+export type PastGuessesOrder = (typeof PAST_GUESSES_ORDERS)[number];
+
 export type AppSettings = {
   showPastGuesses: boolean;
+  pastGuessesOrder: PastGuessesOrder;
   showResearchSources: boolean;
   linkSources: Record<LinkSourceId, boolean>;
 };
@@ -15,6 +20,7 @@ export function defaultSettings(): AppSettings {
 
   return {
     showPastGuesses: true,
+    pastGuessesOrder: "newest-first",
     showResearchSources: true,
     linkSources: Object.fromEntries(
       LINK_SOURCE_IDS.map((sourceId) => [
@@ -96,6 +102,13 @@ export function setShowPastGuesses(
   return { ...settings, showPastGuesses };
 }
 
+export function setPastGuessesOrder(
+  settings: AppSettings,
+  pastGuessesOrder: PastGuessesOrder
+): AppSettings {
+  return { ...settings, pastGuessesOrder };
+}
+
 function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
   if (!isRecord(value) || !isRecord(value.linkSources)) {
     return fallback;
@@ -108,6 +121,9 @@ function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
       typeof value.showPastGuesses === "boolean"
         ? value.showPastGuesses
         : fallback.showPastGuesses,
+    pastGuessesOrder: isPastGuessesOrder(value.pastGuessesOrder)
+      ? value.pastGuessesOrder
+      : fallback.pastGuessesOrder,
     showResearchSources:
       typeof value.showResearchSources === "boolean"
         ? value.showResearchSources
@@ -121,6 +137,10 @@ function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
       ])
     ) as Record<LinkSourceId, boolean>,
   };
+}
+
+function isPastGuessesOrder(value: unknown): value is PastGuessesOrder {
+  return PAST_GUESSES_ORDERS.includes(value as PastGuessesOrder);
 }
 
 function ensureAtLeastOneSource(settings: AppSettings): AppSettings {

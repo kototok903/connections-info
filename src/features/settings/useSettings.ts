@@ -3,8 +3,10 @@ import { useCallback, useState } from "react";
 import {
   type AppSettings,
   loadSettings,
+  type PastGuessesOrder,
   saveSettings,
   setLinkSourceEnabled,
+  setPastGuessesOrder,
   setShowPastGuesses,
   setShowResearchSources,
 } from "@/features/settings/settings-store";
@@ -12,6 +14,7 @@ import type { LinkSourceId } from "#shared/types.js";
 
 type UseSettingsResult = {
   settings: AppSettings;
+  updatePastGuessesOrder: (order: PastGuessesOrder) => void;
   updateShowPastGuesses: (isEnabled: boolean) => void;
   updateShowResearchSources: (isEnabled: boolean) => void;
   updateSource: (sourceId: LinkSourceId, isEnabled: boolean) => void;
@@ -47,8 +50,17 @@ export function useSettings(): UseSettingsResult {
     });
   }, []);
 
+  const updatePastGuessesOrder = useCallback((order: PastGuessesOrder) => {
+    setSettings((current) => {
+      const next = setPastGuessesOrder(current, order);
+      saveSettings(next);
+      return next;
+    });
+  }, []);
+
   return {
     settings,
+    updatePastGuessesOrder,
     updateShowPastGuesses,
     updateShowResearchSources,
     updateSource,

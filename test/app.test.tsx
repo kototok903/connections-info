@@ -286,6 +286,23 @@ describe("Connections app", () => {
     ).toContain('"showPastGuesses":false');
   });
 
+  it("changes the past guesses order from settings", async () => {
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    fireEvent.click(screen.getByRole("button", { name: "Open settings" }));
+    const orderSwitch = await screen.findByRole("switch", {
+      name: "Show recent Past Guesses first",
+    });
+    expect(orderSwitch).toBeChecked();
+
+    fireEvent.click(orderSwitch);
+    expect(orderSwitch).not.toBeChecked();
+    expect(
+      window.localStorage.getItem("connections-info:settings:v1")
+    ).toContain('"pastGuessesOrder":"oldest-first"');
+  });
+
   it("keeps the fourth category playable and opens results after it is submitted", async () => {
     render(<App />);
     await screen.findByText("ALPHA");

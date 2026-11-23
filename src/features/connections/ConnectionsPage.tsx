@@ -15,6 +15,7 @@ export function ConnectionsPage() {
   const request = useConnectionsPuzzle(date);
   const {
     settings,
+    updatePastGuessesOrder,
     updateShowPastGuesses,
     updateShowResearchSources,
     updateSource,
@@ -45,6 +46,7 @@ export function ConnectionsPage() {
         <HeaderActions
           date={date}
           settings={settings}
+          onPastGuessesOrderChange={updatePastGuessesOrder}
           onShowPastGuessesChange={updateShowPastGuesses}
           onShowResearchSourcesChange={updateShowResearchSources}
           onSourceChange={updateSource}
@@ -76,6 +78,8 @@ export function ConnectionsPage() {
           puzzle={request.puzzle}
           enabledSourceIds={enabledSourceIds(settings)}
           showPastGuesses={settings.showPastGuesses}
+          pastGuessesOrder={settings.pastGuessesOrder}
+          onPastGuessesOrderChange={updatePastGuessesOrder}
         />
       ) : null}
     </main>

@@ -11,10 +11,13 @@ import { PastGuesses } from "@/features/connections/PastGuesses";
 import { ResearchLinks } from "@/features/connections/ResearchLinks";
 import { ResultsDialog } from "@/features/connections/ResultsDialog";
 import { WordGrid } from "@/features/connections/WordGrid";
+import type { PastGuessesOrder } from "@/features/settings/settings-store";
 import type { ConnectionsPuzzle, LinkSourceId } from "#shared/types.js";
 
 type ConnectionsGameProps = {
   enabledSourceIds: ReadonlySet<LinkSourceId>;
+  onPastGuessesOrderChange: (order: PastGuessesOrder) => void;
+  pastGuessesOrder: PastGuessesOrder;
   puzzle: ConnectionsPuzzle;
   showPastGuesses: boolean;
 };
@@ -25,6 +28,8 @@ const SHAKE_DURATION_MS = 450;
 
 export function ConnectionsGame({
   enabledSourceIds,
+  onPastGuessesOrderChange,
+  pastGuessesOrder,
   puzzle,
   showPastGuesses,
 }: ConnectionsGameProps) {
@@ -131,7 +136,12 @@ export function ConnectionsGame({
       <ResearchLinks word={selectedWord} enabledSourceIds={enabledSourceIds} />
 
       {showPastGuesses ? (
-        <PastGuesses guesses={game.guesses} puzzle={puzzle} />
+        <PastGuesses
+          guesses={game.guesses}
+          puzzle={puzzle}
+          order={pastGuessesOrder}
+          onOrderChange={onPastGuessesOrderChange}
+        />
       ) : null}
 
       <ResultsDialog

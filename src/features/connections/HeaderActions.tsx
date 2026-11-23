@@ -16,12 +16,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { HintsDialog } from "@/features/connections/HintsDialog";
 import { HowToPlayDialog } from "@/features/connections/HowToPlayDialog";
-import type { AppSettings } from "@/features/settings/settings-store";
+import type {
+  AppSettings,
+  PastGuessesOrder,
+} from "@/features/settings/settings-store";
 import { SettingsDialog } from "@/features/settings/SettingsDialog";
 import type { LinkSourceId } from "#shared/types.js";
 
 type HeaderActionsProps = {
   date: string;
+  onPastGuessesOrderChange: (order: PastGuessesOrder) => void;
   onShowPastGuessesChange: (isEnabled: boolean) => void;
   onShowResearchSourcesChange: (isEnabled: boolean) => void;
   onSourceChange: (sourceId: LinkSourceId, isEnabled: boolean) => void;
@@ -30,6 +34,7 @@ type HeaderActionsProps = {
 
 export function HeaderActions({
   date,
+  onPastGuessesOrderChange,
   onShowPastGuessesChange,
   onShowResearchSourcesChange,
   onSourceChange,
@@ -56,6 +61,7 @@ export function HeaderActions({
         settings={settings}
         open={settingsOpen}
         onOpenChange={setSettingsOpen}
+        onPastGuessesOrderChange={onPastGuessesOrderChange}
         onShowPastGuessesChange={onShowPastGuessesChange}
         onShowResearchSourcesChange={onShowResearchSourcesChange}
         onSourceChange={onSourceChange}

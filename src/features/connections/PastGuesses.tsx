@@ -1,10 +1,16 @@
+import { ClockArrowDownIcon, ClockArrowUpIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import { CATEGORY_TEXT_CLASSES } from "@/features/connections/category-colors";
 import type { GameGuess } from "@/features/connections/game-state";
+import type { PastGuessesOrder } from "@/features/settings/settings-store";
 import { cn } from "@/lib/utils";
 import type { ConnectionColor, ConnectionsPuzzle } from "#shared/types.js";
 
 type PastGuessesProps = {
   guesses: GameGuess[];
+  onOrderChange: (order: PastGuessesOrder) => void;
+  order: PastGuessesOrder;
   puzzle: ConnectionsPuzzle;
 };
 
@@ -12,7 +18,12 @@ type GuessOutcome =
   | { label: "Incorrect" | "One Away"; color: null }
   | { label: Capitalize<ConnectionColor>; color: ConnectionColor };
 
-export function PastGuesses({ guesses, puzzle }: PastGuessesProps) {
+export function PastGuesses({
+  guesses,
+  onOrderChange,
+  order,
+  puzzle,
+}: PastGuessesProps) {
   if (guesses.length === 0) {
     return null;
   }
@@ -22,17 +33,34 @@ export function PastGuesses({ guesses, puzzle }: PastGuessesProps) {
       .flatMap((category) => category.words)
       .map(({ position, word }) => [position, word] as const)
   );
+  const isNewestFirst = order === "newest-first";
+  const orderedGuesses = isNewestFirst ? guesses.toReversed() : guesses;
+  const toggleLabel = isNewestFirst ? "Show oldest first" : "Show newest first";
 
   return (
     <section
       aria-labelledby="past-guesses-heading"
       className="mt-2 flex max-w-148 flex-col gap-2"
     >
-      <h2 id="past-guesses-heading" className="text-sm font-semibold">
-        Past Guesses
-      </h2>
+      <div className="flex items-center justify-between gap-2">
+        <h2 id="past-guesses-heading" className="text-sm font-semibold">
+          Past Guesses
+        </h2>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label={toggleLabel}
+          title={toggleLabel}
+          onClick={() =>
+            onOrderChange(isNewestFirst ? "oldest-first" : "newest-first")
+          }
+        >
+          {isNewestFirst ? <ClockArrowDownIcon /> : <ClockArrowUpIcon />}
+        </Button>
+      </div>
       <ol className="flex flex-col gap-1 text-sm">
-        {guesses.map((guess) => {
+        {orderedGuesses.map((guess) => {
           const outcome = outcomeForGuess(guess, puzzle);
           const words = guess.positions
             .map((position) => wordsByPosition.get(position))

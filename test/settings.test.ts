@@ -7,6 +7,7 @@ import {
   loadSettings,
   saveSettings,
   setLinkSourceEnabled,
+  setPastGuessesOrder,
   setShowPastGuesses,
   setShowResearchSources,
   STORAGE_KEY,
@@ -48,6 +49,23 @@ describe("settings", () => {
     saveSettings(settings);
 
     expect(loadSettings().showPastGuesses).toBe(false);
+  });
+
+  it("defaults to newest-first past guesses and saves the order", () => {
+    expect(defaultSettings().pastGuessesOrder).toBe("newest-first");
+
+    saveSettings(setPastGuessesOrder(defaultSettings(), "oldest-first"));
+
+    expect(loadSettings().pastGuessesOrder).toBe("oldest-first");
+  });
+
+  it("falls back to the default order for unknown stored values", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...defaultSettings(), pastGuessesOrder: "sideways" })
+    );
+
+    expect(loadSettings().pastGuessesOrder).toBe("newest-first");
   });
 
   it("prevents disabling the last enabled source", () => {

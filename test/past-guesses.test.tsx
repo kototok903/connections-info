@@ -1,5 +1,5 @@
-import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { PastGuesses } from "@/features/connections/PastGuesses";
 import type { ConnectionsPuzzle } from "#shared/types.js";
@@ -21,6 +21,8 @@ describe("PastGuesses", () => {
     render(
       <PastGuesses
         puzzle={puzzle}
+        order="oldest-first"
+        onOrderChange={() => {}}
         guesses={[
           { positions: [0, 1, 2, 4] },
           { positions: [0, 1, 4, 5] },
@@ -42,8 +44,36 @@ describe("PastGuesses", () => {
     );
   });
 
+  it("lists newest guesses first and toggles the order", () => {
+    const onOrderChange = vi.fn();
+    render(
+      <PastGuesses
+        puzzle={puzzle}
+        order="newest-first"
+        onOrderChange={onOrderChange}
+        guesses={[{ positions: [0, 1, 2, 4] }, { positions: [4, 5, 6, 7] }]}
+      />
+    );
+
+    const items = screen.getAllByRole("listitem");
+    expect(items[0]).toHaveTextContent("CAR, PLANE, TRUCK, SHIP -> Green");
+    expect(items[1]).toHaveTextContent(
+      "APPLE, BANANA, ORANGE, CAR -> One Away"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Show oldest first" }));
+    expect(onOrderChange).toHaveBeenCalledWith("oldest-first");
+  });
+
   it("does not render before the first guess", () => {
-    render(<PastGuesses puzzle={puzzle} guesses={[]} />);
+    render(
+      <PastGuesses
+        puzzle={puzzle}
+        guesses={[]}
+        order="newest-first"
+        onOrderChange={() => {}}
+      />
+    );
 
     expect(
       screen.queryByRole("heading", { name: "Past Guesses" })

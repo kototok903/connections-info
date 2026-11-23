@@ -21,6 +21,7 @@ import { LINK_SOURCES } from "@/features/connections/links";
 import {
   type AppSettings,
   enabledSourceCount,
+  type PastGuessesOrder,
 } from "@/features/settings/settings-store";
 import { cn } from "@/lib/utils";
 import type { LinkSourceId } from "#shared/types.js";
@@ -30,6 +31,7 @@ type SettingsDialogProps = {
   settings: AppSettings;
   open?: boolean;
   triggerClassName?: string;
+  onPastGuessesOrderChange: (order: PastGuessesOrder) => void;
   onShowPastGuessesChange: (isEnabled: boolean) => void;
   onShowResearchSourcesChange: (isEnabled: boolean) => void;
   onSourceChange: (sourceId: LinkSourceId, isEnabled: boolean) => void;
@@ -40,6 +42,7 @@ export function SettingsDialog({
   settings,
   open,
   triggerClassName,
+  onPastGuessesOrderChange,
   onShowPastGuessesChange,
   onShowResearchSourcesChange,
   onSourceChange,
@@ -91,6 +94,26 @@ export function SettingsDialog({
               id="show-past-guesses"
               checked={settings.showPastGuesses}
               onCheckedChange={onShowPastGuessesChange}
+            />
+          </Field>
+
+          <Field
+            orientation="horizontal"
+            data-disabled={!settings.showPastGuesses || undefined}
+            className="rounded-lg p-2 hover:bg-muted"
+          >
+            <FieldLabel htmlFor="past-guesses-newest-first">
+              Show recent Past Guesses first
+            </FieldLabel>
+            <Switch
+              id="past-guesses-newest-first"
+              checked={settings.pastGuessesOrder === "newest-first"}
+              disabled={!settings.showPastGuesses}
+              onCheckedChange={(isChecked) =>
+                onPastGuessesOrderChange(
+                  isChecked ? "newest-first" : "oldest-first"
+                )
+              }
             />
           </Field>
 
