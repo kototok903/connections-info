@@ -35,6 +35,14 @@ describe("connectionsGameReducer", () => {
     expect(state.selectedPositions).toEqual([0, 1, 3]);
   });
 
+  it("keeps selections and guesses in board order, not click order", () => {
+    let state = select(createConnectionsGameState(puzzle), [9, 2, 14, 0]);
+    expect(state.selectedPositions).toEqual([0, 2, 9, 14]);
+
+    state = connectionsGameReducer(state, { type: "submit", puzzle });
+    expect(state.guesses).toEqual([{ positions: [0, 2, 9, 14] }]);
+  });
+
   it("records a correct group but leaves the final group for the user", () => {
     let state = solveCategory(createConnectionsGameState(puzzle), [0, 1, 2, 3]);
     state = solveCategory(state, [4, 5, 6, 7]);
@@ -125,15 +133,15 @@ describe("connectionsGameReducer", () => {
     expect(state.wasRevealed).toBe(true);
   });
 
-  it("stashes selected words to the bottom of the board", () => {
+  it("stashes selected words to the bottom of the board in board order", () => {
     let state = select(createConnectionsGameState(puzzle), [12, 1, 6, 3]);
     state = connectionsGameReducer(state, { type: "stash" });
 
-    expect(state.stashedGroups).toEqual([[12, 1, 6, 3]]);
+    expect(state.stashedGroups).toEqual([[1, 3, 6, 12]]);
     expect(state.selectedPositions).toEqual([]);
     expect(state.guesses).toEqual([]);
     expect(state.mistakesRemaining).toBe(4);
-    expect(displayWordOrder(state).slice(-4)).toEqual([12, 1, 6, 3]);
+    expect(displayWordOrder(state).slice(-4)).toEqual([1, 3, 6, 12]);
     expect(displayWordOrder(state, false)).toEqual(state.wordOrder);
   });
 

@@ -22,6 +22,7 @@ export type ConnectionsGameState = {
   guesses: GameGuess[];
   mistakesRemaining: number | null;
   resolvingColor: ConnectionColor | null;
+  /** Always kept in board order (see displayWordOrder), never click order. */
   selectedPositions: number[];
   solvedColors: ConnectionColor[];
   stashedGroups: number[][];
@@ -143,6 +144,15 @@ export function displayWordOrder(
   ];
 }
 
+function inBoardOrder(
+  state: ConnectionsGameState,
+  positions: readonly number[]
+): number[] {
+  return displayWordOrder(state).filter((position) =>
+    positions.includes(position)
+  );
+}
+
 function toggleStash(state: ConnectionsGameState): ConnectionsGameState {
   if (state.status !== "playing" || state.selectedPositions.length !== 4) {
     return state;
@@ -201,7 +211,10 @@ function selectWord(
 
   return {
     ...state,
-    selectedPositions: [...state.selectedPositions, position],
+    selectedPositions: inBoardOrder(state, [
+      ...state.selectedPositions,
+      position,
+    ]),
   };
 }
 
