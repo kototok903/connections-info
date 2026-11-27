@@ -29,6 +29,7 @@ type HeaderActionsProps = {
   onPastGuessesOrderChange: (order: PastGuessesOrder) => void;
   onShowPastGuessesChange: (isEnabled: boolean) => void;
   onShowResearchSourcesChange: (isEnabled: boolean) => void;
+  onShowStashChange: (isEnabled: boolean) => void;
   onSourceChange: (sourceId: LinkSourceId, isEnabled: boolean) => void;
   onThemeChange: (theme: Theme) => void;
   settings: AppSettings;
@@ -39,6 +40,7 @@ export function HeaderActions({
   onPastGuessesOrderChange,
   onShowPastGuessesChange,
   onShowResearchSourcesChange,
+  onShowStashChange,
   onSourceChange,
   onThemeChange,
   settings,
@@ -67,6 +69,7 @@ export function HeaderActions({
         onPastGuessesOrderChange={onPastGuessesOrderChange}
         onShowPastGuessesChange={onShowPastGuessesChange}
         onShowResearchSourcesChange={onShowResearchSourcesChange}
+        onShowStashChange={onShowStashChange}
         onSourceChange={onSourceChange}
         onThemeChange={onThemeChange}
         triggerClassName="hidden sm:inline-flex"

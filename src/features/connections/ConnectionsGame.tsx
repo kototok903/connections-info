@@ -20,6 +20,7 @@ type ConnectionsGameProps = {
   pastGuessesOrder: PastGuessesOrder;
   puzzle: ConnectionsPuzzle;
   showPastGuesses: boolean;
+  showStash: boolean;
 };
 
 const RESOLUTION_DELAY_MS = 520;
@@ -32,6 +33,7 @@ export function ConnectionsGame({
   pastGuessesOrder,
   puzzle,
   showPastGuesses,
+  showStash,
 }: ConnectionsGameProps) {
   const [game, dispatch] = useReducer(
     connectionsGameReducer,
@@ -115,11 +117,13 @@ export function ConnectionsGame({
         game={game}
         shake={shake}
         puzzle={puzzle}
+        showStash={showStash}
         onSelect={(position) => dispatch({ type: "select", position })}
       />
 
       <GameActions
         game={game}
+        showStash={showStash}
         onShuffle={() =>
           dispatch({
             type: "shuffle",
@@ -128,6 +132,7 @@ export function ConnectionsGame({
         }
         onDeselectAll={() => dispatch({ type: "deselect-all" })}
         onSubmit={() => dispatch({ type: "submit", puzzle })}
+        onStash={() => dispatch({ type: "stash" })}
         onReveal={() => dispatch({ type: "reveal", puzzle })}
         onReplay={replay}
         onOpenResults={() => setResultsOpen(true)}

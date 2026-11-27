@@ -10,6 +10,7 @@ import {
   setPastGuessesOrder,
   setShowPastGuesses,
   setShowResearchSources,
+  setShowStash,
   setTheme,
   STORAGE_KEY,
 } from "@/features/settings/settings-store";
@@ -50,6 +51,14 @@ describe("settings", () => {
     saveSettings(settings);
 
     expect(loadSettings().showPastGuesses).toBe(false);
+  });
+
+  it("shows the stash button by default and saves the preference", () => {
+    expect(defaultSettings().showStash).toBe(true);
+
+    saveSettings(setShowStash(defaultSettings(), false));
+
+    expect(loadSettings().showStash).toBe(false);
   });
 
   it("defaults to newest-first past guesses and saves the order", () => {

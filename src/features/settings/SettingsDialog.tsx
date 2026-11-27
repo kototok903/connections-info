@@ -41,6 +41,7 @@ type SettingsDialogProps = {
   onPastGuessesOrderChange: (order: PastGuessesOrder) => void;
   onShowPastGuessesChange: (isEnabled: boolean) => void;
   onShowResearchSourcesChange: (isEnabled: boolean) => void;
+  onShowStashChange: (isEnabled: boolean) => void;
   onSourceChange: (sourceId: LinkSourceId, isEnabled: boolean) => void;
   onThemeChange: (theme: Theme) => void;
 };
@@ -63,6 +64,7 @@ export function SettingsDialog({
   onPastGuessesOrderChange,
   onShowPastGuessesChange,
   onShowResearchSourcesChange,
+  onShowStashChange,
   onSourceChange,
   onThemeChange,
 }: SettingsDialogProps) {
@@ -129,6 +131,18 @@ export function SettingsDialog({
               id="show-research-sources"
               checked={settings.showResearchSources}
               onCheckedChange={onShowResearchSourcesChange}
+            />
+          </Field>
+
+          <Field
+            orientation="horizontal"
+            className="rounded-lg p-2 hover:bg-muted"
+          >
+            <FieldLabel htmlFor="show-stash">Show Stash button</FieldLabel>
+            <Switch
+              id="show-stash"
+              checked={settings.showStash}
+              onCheckedChange={onShowStashChange}
             />
           </Field>
 

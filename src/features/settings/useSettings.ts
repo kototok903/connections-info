@@ -9,6 +9,7 @@ import {
   setPastGuessesOrder,
   setShowPastGuesses,
   setShowResearchSources,
+  setShowStash,
   setTheme,
   type Theme,
 } from "@/features/settings/settings-store";
@@ -19,6 +20,7 @@ type UseSettingsResult = {
   updatePastGuessesOrder: (order: PastGuessesOrder) => void;
   updateShowPastGuesses: (isEnabled: boolean) => void;
   updateShowResearchSources: (isEnabled: boolean) => void;
+  updateShowStash: (isEnabled: boolean) => void;
   updateSource: (sourceId: LinkSourceId, isEnabled: boolean) => void;
   updateTheme: (theme: Theme) => void;
 };
@@ -53,6 +55,14 @@ export function useSettings(): UseSettingsResult {
     });
   }, []);
 
+  const updateShowStash = useCallback((isEnabled: boolean) => {
+    setSettings((current) => {
+      const next = setShowStash(current, isEnabled);
+      saveSettings(next);
+      return next;
+    });
+  }, []);
+
   const updatePastGuessesOrder = useCallback((order: PastGuessesOrder) => {
     setSettings((current) => {
       const next = setPastGuessesOrder(current, order);
@@ -74,6 +84,7 @@ export function useSettings(): UseSettingsResult {
     updatePastGuessesOrder,
     updateShowPastGuesses,
     updateShowResearchSources,
+    updateShowStash,
     updateSource,
     updateTheme,
   };

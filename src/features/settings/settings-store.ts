@@ -17,6 +17,7 @@ export type AppSettings = {
   showPastGuesses: boolean;
   pastGuessesOrder: PastGuessesOrder;
   showResearchSources: boolean;
+  showStash: boolean;
   linkSources: Record<LinkSourceId, boolean>;
 };
 
@@ -28,6 +29,7 @@ export function defaultSettings(): AppSettings {
     showPastGuesses: true,
     pastGuessesOrder: "newest-first",
     showResearchSources: true,
+    showStash: true,
     linkSources: Object.fromEntries(
       LINK_SOURCE_IDS.map((sourceId) => [
         sourceId,
@@ -108,6 +110,13 @@ export function setShowPastGuesses(
   return { ...settings, showPastGuesses };
 }
 
+export function setShowStash(
+  settings: AppSettings,
+  showStash: boolean
+): AppSettings {
+  return { ...settings, showStash };
+}
+
 export function setTheme(settings: AppSettings, theme: Theme): AppSettings {
   return { ...settings, theme };
 }
@@ -139,6 +148,10 @@ function mergeSettings(value: unknown, fallback: AppSettings): AppSettings {
       typeof value.showResearchSources === "boolean"
         ? value.showResearchSources
         : fallback.showResearchSources,
+    showStash:
+      typeof value.showStash === "boolean"
+        ? value.showStash
+        : fallback.showStash,
     linkSources: Object.fromEntries(
       LINK_SOURCE_IDS.map((sourceId) => [
         sourceId,

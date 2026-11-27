@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
-import type { ConnectionsGameState } from "@/features/connections/game-state";
+import {
+  type ConnectionsGameState,
+  selectedStashIndex,
+} from "@/features/connections/game-state";
 
 type GameActionsProps = {
   game: ConnectionsGameState;
@@ -8,7 +11,9 @@ type GameActionsProps = {
   onReplay: () => void;
   onReveal: () => void;
   onShuffle: () => void;
+  onStash: () => void;
   onSubmit: () => void;
+  showStash: boolean;
 };
 
 export function GameActions({
@@ -18,7 +23,9 @@ export function GameActions({
   onReplay,
   onReveal,
   onShuffle,
+  onStash,
   onSubmit,
+  showStash,
 }: GameActionsProps) {
   return (
     <section
@@ -68,6 +75,19 @@ export function GameActions({
           >
             Submit
           </Button>
+          {showStash ? (
+            <Button
+              type="button"
+              size="lg"
+              variant="outline"
+              disabled={
+                game.status !== "playing" || game.selectedPositions.length !== 4
+              }
+              onClick={onStash}
+            >
+              {selectedStashIndex(game) === -1 ? "Stash" : "Unstash"}
+            </Button>
+          ) : null}
           {game.mistakesRemaining === null ? (
             <Button
               type="button"

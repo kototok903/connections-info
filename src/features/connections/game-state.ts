@@ -24,6 +24,7 @@ export type ConnectionsGameState = {
   resolvingColor: ConnectionColor | null;
   selectedPositions: number[];
   solvedColors: ConnectionColor[];
+  stashedGroups: number[][];
   status: GameStatus;
   submittedGuessKeys: string[];
   wasRevealed: boolean;
@@ -34,6 +35,7 @@ export type ConnectionsGameAction =
   | { type: "select"; position: number }
   | { type: "deselect-all" }
   | { type: "shuffle"; order: number[] }
+  | { type: "stash" }
   | { type: "submit"; puzzle: ConnectionsPuzzle }
   | { type: "finish-resolution"; puzzle: ConnectionsPuzzle }
   | { type: "reveal"; puzzle: ConnectionsPuzzle }
@@ -49,6 +51,7 @@ export function createConnectionsGameState(
     resolvingColor: null,
     selectedPositions: [],
     solvedColors: [],
+    stashedGroups: [],
     status: "playing",
     submittedGuessKeys: [],
     wasRevealed: false,
@@ -74,6 +77,8 @@ export function connectionsGameReducer(
       return state.status === "playing"
         ? { ...state, selectedPositions: [], wordOrder: action.order }
         : state;
+    case "stash":
+      return toggleStash(state);
     case "submit":
       return submitGuess(state, action.puzzle);
     case "finish-resolution":
@@ -108,6 +113,68 @@ export function categoryForPosition(
 ): ConnectionsCategory | undefined {
   return puzzle.categories.find((category) =>
     category.words.some((word) => word.position === position)
+  );
+}
+
+/** Index of the stashed group matching the selection exactly, or -1. */
+export function selectedStashIndex(state: ConnectionsGameState): number {
+  if (state.selectedPositions.length !== 4) {
+    return -1;
+  }
+
+  return state.stashedGroups.findIndex((group) =>
+    state.selectedPositions.every((position) => group.includes(position))
+  );
+}
+
+/** Unstashed words in board order, followed by each stashed group. */
+export function displayWordOrder(
+  state: ConnectionsGameState,
+  includeStash = true
+): number[] {
+  if (!includeStash || state.stashedGroups.length === 0) {
+    return state.wordOrder;
+  }
+
+  const stashed = state.stashedGroups.flat();
+  return [
+    ...state.wordOrder.filter((position) => !stashed.includes(position)),
+    ...stashed.filter((position) => state.wordOrder.includes(position)),
+  ];
+}
+
+function toggleStash(state: ConnectionsGameState): ConnectionsGameState {
+  if (state.status !== "playing" || state.selectedPositions.length !== 4) {
+    return state;
+  }
+
+  const matchingIndex = selectedStashIndex(state);
+  if (matchingIndex !== -1) {
+    return {
+      ...state,
+      selectedPositions: [],
+      stashedGroups: state.stashedGroups.filter(
+        (_, index) => index !== matchingIndex
+      ),
+    };
+  }
+
+  return {
+    ...state,
+    selectedPositions: [],
+    stashedGroups: [
+      ...withoutGroupsContaining(state.stashedGroups, state.selectedPositions),
+      [...state.selectedPositions],
+    ],
+  };
+}
+
+function withoutGroupsContaining(
+  groups: number[][],
+  positions: readonly number[]
+): number[][] {
+  return groups.filter(
+    (group) => !group.some((position) => positions.includes(position))
   );
 }
 
@@ -250,6 +317,10 @@ function beginResolution(
     ...state,
     resolvingColor: category.color,
     selectedPositions: categoryPositions,
+    stashedGroups: withoutGroupsContaining(
+      state.stashedGroups,
+      categoryPositions
+    ),
     status,
     wordOrder: [
       ...categoryPositions,

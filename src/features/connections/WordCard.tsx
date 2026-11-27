@@ -2,12 +2,14 @@ import { motion, useAnimate } from "motion/react";
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type WordCardProps = {
   disabled: boolean;
   onSelect: () => void;
   selected: boolean;
   shakeId: number | null;
+  stashed: boolean;
   word: string;
 };
 
@@ -16,6 +18,7 @@ export function WordCard({
   onSelect,
   selected,
   shakeId,
+  stashed,
   word,
 }: WordCardProps) {
   const [scope, animate] = useAnimate();
@@ -46,8 +49,13 @@ export function WordCard({
         size="tile"
         disabled={disabled}
         aria-pressed={selected}
+        data-stashed={stashed || undefined}
         onClick={onSelect}
-        className="w-full disabled:opacity-100"
+        className={cn(
+          "w-full disabled:opacity-100",
+          stashed &&
+            "inset-ring-2 inset-ring-foreground/15 aria-pressed:inset-ring-primary-foreground/40"
+        )}
       >
         <span className="wrap-anywhere">{word}</span>
       </Button>

@@ -1,7 +1,10 @@
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 
 import { CATEGORY_BACKGROUND_CLASSES } from "@/features/connections/category-colors";
-import type { ConnectionsGameState } from "@/features/connections/game-state";
+import {
+  type ConnectionsGameState,
+  displayWordOrder,
+} from "@/features/connections/game-state";
 import { WordCard } from "@/features/connections/WordCard";
 import { cn } from "@/lib/utils";
 import type { ConnectionsPuzzle } from "#shared/types.js";
@@ -11,9 +14,16 @@ type WordGridProps = {
   onSelect: (position: number) => void;
   puzzle: ConnectionsPuzzle;
   shake: { id: number; positions: number[] } | null;
+  showStash: boolean;
 };
 
-export function WordGrid({ game, onSelect, puzzle, shake }: WordGridProps) {
+export function WordGrid({
+  game,
+  onSelect,
+  puzzle,
+  shake,
+  showStash,
+}: WordGridProps) {
   const wordsByPosition = new Map(
     puzzle.categories
       .flatMap((category) => category.words)
@@ -58,7 +68,7 @@ export function WordGrid({ game, onSelect, puzzle, shake }: WordGridProps) {
           })}
         </AnimatePresence>
 
-        {game.wordOrder.map((position) => {
+        {displayWordOrder(game, showStash).map((position) => {
           const word = wordsByPosition.get(position);
           if (!word) {
             return null;
@@ -70,6 +80,10 @@ export function WordGrid({ game, onSelect, puzzle, shake }: WordGridProps) {
               key={position}
               word={word.word}
               selected={selected}
+              stashed={
+                showStash &&
+                game.stashedGroups.some((group) => group.includes(position))
+              }
               disabled={game.status !== "playing"}
               shakeId={shake?.positions.includes(position) ? shake.id : null}
               onSelect={() => onSelect(position)}

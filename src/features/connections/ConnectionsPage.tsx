@@ -19,6 +19,7 @@ export function ConnectionsPage() {
     updatePastGuessesOrder,
     updateShowPastGuesses,
     updateShowResearchSources,
+    updateShowStash,
     updateSource,
     updateTheme,
   } = useSettings();
@@ -52,6 +53,7 @@ export function ConnectionsPage() {
           onPastGuessesOrderChange={updatePastGuessesOrder}
           onShowPastGuessesChange={updateShowPastGuesses}
           onShowResearchSourcesChange={updateShowResearchSources}
+          onShowStashChange={updateShowStash}
           onSourceChange={updateSource}
           onThemeChange={updateTheme}
         />
@@ -82,6 +84,7 @@ export function ConnectionsPage() {
           puzzle={request.puzzle}
           enabledSourceIds={enabledSourceIds(settings)}
           showPastGuesses={settings.showPastGuesses}
+          showStash={settings.showStash}
           pastGuessesOrder={settings.pastGuessesOrder}
           onPastGuessesOrderChange={updatePastGuessesOrder}
         />

@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   connectionsGameReducer,
+  type ConnectionsGameState,
   createConnectionsGameState,
+  displayWordOrder,
+  selectedStashIndex,
   shuffledWordOrder,
 } from "@/features/connections/game-state";
 import type { ConnectionsPuzzle } from "#shared/types.js";
@@ -122,6 +125,48 @@ describe("connectionsGameReducer", () => {
     expect(state.wasRevealed).toBe(true);
   });
 
+  it("stashes selected words to the bottom of the board", () => {
+    let state = select(createConnectionsGameState(puzzle), [12, 1, 6, 3]);
+    state = connectionsGameReducer(state, { type: "stash" });
+
+    expect(state.stashedGroups).toEqual([[12, 1, 6, 3]]);
+    expect(state.selectedPositions).toEqual([]);
+    expect(state.guesses).toEqual([]);
+    expect(state.mistakesRemaining).toBe(4);
+    expect(displayWordOrder(state).slice(-4)).toEqual([12, 1, 6, 3]);
+    expect(displayWordOrder(state, false)).toEqual(state.wordOrder);
+  });
+
+  it("unstashes overlapping groups when stashing a new group", () => {
+    let state = stash(createConnectionsGameState(puzzle), [0, 1, 2, 3]);
+    state = stash(state, [4, 5, 6, 7]);
+    state = stash(state, [8, 9, 10, 0]);
+
+    expect(state.stashedGroups).toEqual([
+      [4, 5, 6, 7],
+      [8, 9, 10, 0],
+    ]);
+  });
+
+  it("unstashes a group when exactly that group is selected", () => {
+    let state = stash(createConnectionsGameState(puzzle), [0, 1, 2, 3]);
+    state = select(state, [3, 2, 1, 0]);
+    expect(selectedStashIndex(state)).toBe(0);
+
+    state = connectionsGameReducer(state, { type: "stash" });
+
+    expect(state.stashedGroups).toEqual([]);
+    expect(state.selectedPositions).toEqual([]);
+  });
+
+  it("drops a stashed group once its words are solved", () => {
+    let state = stash(createConnectionsGameState(puzzle), [0, 1, 2, 3]);
+    state = stash(state, [4, 5, 6, 8]);
+    state = selectAndSubmit(state, [0, 1, 2, 3]);
+
+    expect(state.stashedGroups).toEqual([[4, 5, 6, 8]]);
+  });
+
   it("shuffles without mutating the supplied order", () => {
     const positions = [0, 1, 2, 3];
     const shuffled = shuffledWordOrder(positions, () => 0);
@@ -166,4 +211,16 @@ function solveCategory(
     type: "finish-resolution",
     puzzle,
   });
+}
+
+function select(state: ConnectionsGameState, positions: number[]) {
+  return positions.reduce(
+    (current, position) =>
+      connectionsGameReducer(current, { type: "select", position }),
+    state
+  );
+}
+
+function stash(state: ConnectionsGameState, positions: number[]) {
+  return connectionsGameReducer(select(state, positions), { type: "stash" });
 }

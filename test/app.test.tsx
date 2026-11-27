@@ -286,6 +286,54 @@ describe("Connections app", () => {
     ).toContain('"showPastGuesses":false');
   });
 
+  it("stashes and unstashes a group, and hides the button from settings", async () => {
+    render(<App />);
+    await screen.findByText("ALPHA");
+
+    expect(screen.getByRole("button", { name: "Stash" })).toBeDisabled();
+    for (const word of ["ALPHA", "BRAVO", "CHARLIE", "ECHO"]) {
+      fireEvent.click(screen.getByRole("button", { name: word }));
+    }
+    fireEvent.click(screen.getByRole("button", { name: "Stash" }));
+
+    const tiles = screen
+      .getByRole("region", { name: "Puzzle words" })
+      .querySelectorAll("button");
+    expect([...tiles].slice(-4).map((tile) => tile.textContent)).toEqual([
+      "ALPHA",
+      "BRAVO",
+      "CHARLIE",
+      "ECHO",
+    ]);
+    expect(screen.getByRole("button", { name: "ALPHA" })).toHaveAttribute(
+      "data-stashed"
+    );
+    expect(
+      screen.queryByRole("heading", { name: "Past Guesses" })
+    ).not.toBeInTheDocument();
+
+    for (const word of ["ECHO", "CHARLIE", "BRAVO", "ALPHA"]) {
+      fireEvent.click(screen.getByRole("button", { name: word }));
+    }
+    fireEvent.click(screen.getByRole("button", { name: "Unstash" }));
+    expect(screen.getByRole("button", { name: "ALPHA" })).not.toHaveAttribute(
+      "data-stashed"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Open settings" }));
+    const stashSwitch = await screen.findByRole("switch", {
+      name: "Show Stash button",
+    });
+    expect(stashSwitch).toBeChecked();
+    fireEvent.click(stashSwitch);
+    expect(
+      screen.queryByRole("button", { name: "Stash" })
+    ).not.toBeInTheDocument();
+    expect(
+      window.localStorage.getItem("connections-info:settings:v1")
+    ).toContain('"showStash":false');
+  });
+
   it("switches the theme from settings", async () => {
     render(<App />);
     await screen.findByText("ALPHA");
